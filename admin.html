@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a2f8f" />
+  <title>Thunjai Express — Admin</title>
+  <style>
+    :root{
+      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
+      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
+      --radius:18px; --hdr:56px; --bnv:64px; --maxw:520px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
+    .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
+    .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
+    header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
+    .logo svg{width:20px;height:20px;color:var(--brand-blue)}
+    .brand h1{font-size:1.05rem;margin:0;color:var(--brand-blue)}
+    .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
+    .hdr-actions{display:flex;gap:8px}
+    .iconbtn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;place-items:center;cursor:pointer}
+    .content{flex:1;overflow:auto;padding:16px;display:none}
+    .content.active{display:block}
+    .grid{display:grid;gap:12px}
+    .grid.cols-2{grid-template-columns:1fr 1fr}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+    .card h3{margin:.2rem 0 .4rem 0;font-size:.96rem;color:#0a2f8f}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
+    .muted{color:var(--muted);font-size:.85rem}
+    .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--brand-blue);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
+    .btn.warn{background:#ffeee8;color:#b42318;border:1px solid #ffd2c4}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
+    td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
+    nav.bnv{height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
+    .tab.active{color:var(--brand-blue);font-weight:700}
+    @media (prefers-color-scheme: dark){
+      body{background:#0b1020;color:#e5e7eb}
+      .phone{background:#0f152a}
+      header,.card,td{background:#0f152a;color:#e5e7eb;border-color:#223}
+      nav.bnv{background:#0f152a;border-color:#223}
+      .iconbtn{background:#0f152a;border-color:#223}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="phone">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-label="Thunjai Express">
+		  <a href="home.html" class="logo" aria-label="Thunjai Express">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
+      </svg>
+    </a>
+		  </div>
+          <div>
+            <div class="role-chip">Role: Admin</div>
+            <h1>Thunjai Express</h1>
+          </div>
+        </div>
+        <div class="hdr-actions">
+          <button class="iconbtn" onclick="toast('ยังไม่มีแจ้งเตือนใหม่')">🔔</button>
+        </div>
+      </header>
+
+      <!-- Dashboard / KPIs -->
+      <section id="tab-kpi" class="content active">
+        <div class="grid cols-2">
+          <div class="card"><h3>ออเดอร์วันนี้</h3><div class="row"><div class="pill">ทั้งหมด</div><b id="kpiOrders">128</b></div></div>
+          <div class="card"><h3>อัตราส่งสำเร็จ</h3><div class="row"><div class="pill">D+1</div><b id="kpiSuccess">96.2%</b></div></div>
+          <div class="card"><h3>งานค้าง Hub</h3><div class="row"><div class="pill">ก่อน 18:00</div><b id="kpiBacklog">23</b></div></div>
+          <div class="card"><h3>เคสข้อยกเว้น</h3><div class="row"><div class="pill">เปิดใหม่</div><b id="kpiExc">7</b></div></div>
+          <div class="card"><h3>ยอด COD รออนุมัติ</h3><div class="row"><div class="pill">ถอนเงิน</div><b id="kpiCOD">฿42,300</b></div></div>
+          <div class="card"><h3>คิวติดต่อ CS</h3><div class="row"><div class="pill">รอ 30 นาที+</div><b id="kpiCS">12</b></div></div>
+        </div>
+        <div class="grid" style="margin-top:12px">
+          <div class="card">
+            <h3>การแจ้งเตือน SLA</h3>
+            <table><thead><tr><th>ประเภท</th><th>รายละเอียด</th><th>เวลา</th></tr></thead>
+              <tbody id="slaTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Users / Roles -->
+      <section id="tab-users" class="content">
+        <div class="card" style="margin-bottom:12px">
+          <h3>ผู้ใช้งานและบทบาท</h3>
+          <div class="row"><input id="userSearch" placeholder="ค้นหาชื่อ/อีเมล" oninput="filterUsers()" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn primary" onclick="createUser()">+ สร้างผู้ใช้</button></div>
+        </div>
+        <table>
+          <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>บทบาท</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+          <tbody id="userTable"></tbody>
+        </table>
+      </section>
+
+      <!-- COD Reconcile -->
+      <section id="tab-cod" class="content">
+        <div class="grid">
+          <div class="card"><h3>คำขอถอนเงิน COD</h3><div id="codReq" class="grid" style="gap:10px"></div></div>
+          <div class="card"><h3>ประวัติอนุมัติ</h3><table><thead><tr><th>เวลา</th><th>ผู้ค้า</th><th>ยอด</th></tr></thead><tbody id="codHist"></tbody></table></div>
+        </div>
+      </section>
+
+      <!-- Config -->
+      <section id="tab-config" class="content">
+        <div class="grid">
+          <div class="card"><h3>โซน/เรทราคา</h3><div class="row"><input id="zone" placeholder="ชื่อโซน เช่น BKK-W" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><input id="rate" type="number" placeholder="ค่าเริ่มต้น (฿)" style="width:140px;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn primary" onclick="addRate()">บันทึก</button></div><div id="rateList" class="grid" style="gap:8px;margin-top:8px"></div></div>
+          <div class="card"><h3>Webhooks / API</h3><div class="row"><input placeholder="URL" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn ghost" onclick="toast('ทดสอบส่ง Webhook (ตัวอย่าง)')">ทดสอบ</button></div></div>
+        </div>
+      </section>
+
+      <!-- Reports -->
+      <section id="tab-reports" class="content">
+        <div class="card"><h3>รายงาน</h3><div class="row"><select id="reportType" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"><option value="daily">รายวัน</option><option value="cod">COD</option><option value="exception">ข้อยกเว้น</option><option value="rider-kpi">Rider KPI</option></select><button class="btn primary" onclick="exportReport()">Export CSV</button></div></div>
+        <table><thead><tr><th>เวลา</th><th>ไฟล์</th><th>สถานะ</th></tr></thead><tbody id="reportLog"></tbody></table>
+      </section>
+
+      <nav class="bnv" role="tablist">
+        <div class="tab active" data-tab="kpi" onclick="switchTab(this)">📊<span>Dashboard</span></div>
+        <div class="tab" data-tab="users" onclick="switchTab(this)">👥<span>Users</span></div>
+        <div class="tab" data-tab="cod" onclick="switchTab(this)">💼<span>COD</span></div>
+        <div class="tab" data-tab="config" onclick="switchTab(this)">⚙️<span>Config</span></div>
+        <div class="tab" data-tab="reports" onclick="switchTab(this)">📄<span>Reports</span></div>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');const tab=el.dataset.tab;document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active')}
+    function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+
+    // SLA table demo
+    const slaRows=[{type:'OFD Delay',detail:'8 ชิ้นเกิน SLA เขตบางแค',time:'11:05'},{type:'Hub Backlog',detail:'15 ชิ้นรอคัดแยก > 60 นาที',time:'10:50'},{type:'CS Queue',detail:'รอคิว 14 เคส',time:'10:45'}]
+    document.getElementById('slaTable').innerHTML = slaRows.map(r=>`<tr><td>${r.type}</td><td>${r.detail}</td><td>${r.time}</td></tr>`).join('')
+
+    // Users demo
+    const users=[{name:'คุณธันย์ใจ',email:'rider1@thunjai.express',role:'Rider',status:'Active'},{name:'บางแค Hub',email:'hub01@thunjai.express',role:'Hub',status:'Active'},{name:'Kornthip',email:'admin@thunjai.express',role:'Admin',status:'Active'}]
+    function renderUsers(){ document.getElementById('userTable').innerHTML=users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.role}</td><td>${u.status}</td><td><button class='btn ghost' onclick="editUser('${u.email}')">แก้ไข</button></td></tr>`).join('') }
+    function filterUsers(){ const q=document.getElementById('userSearch').value.toLowerCase();Array.from(document.querySelectorAll('#userTable tr')).forEach(tr=>{tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none'}) }
+    function createUser(){ users.push({name:'New User',email:'new@thunjai.express',role:'Sender',status:'Invite'}); renderUsers(); toast('สร้างผู้ใช้ (เดโม)') }
+    function editUser(email){ toast('แก้ไขผู้ใช้: '+email) }
+    renderUsers()
+
+    // COD demo
+    const codReq=[{time:'10:00',merchant:'ร้าน A',amt:8500},{time:'10:15',merchant:'ร้าน B',amt:12300}]
+    function renderCOD(){ document.getElementById('codReq').innerHTML = codReq.map(x=>`<div class='card'><div class='row'><b>${x.merchant}</b><b>฿${x.amt.toLocaleString('th-TH')}</b></div><div class='row'><span class='muted'>${x.time}</span><div><button class='btn ghost' onclick='approveCOD(${x.amt})'>อนุมัติ</button> <button class='btn warn' onclick='rejectCOD()'>ปฏิเสธ</button></div></div></div>`).join('') }
+    function approveCOD(amt){ addCODHist({time:new Date().toLocaleString('th-TH'),merchant:'(ตัวอย่าง)',amt}); toast('อนุมัติถอนเงิน') }
+    function rejectCOD(){ toast('ปฏิเสธคำขอ') }
+    function addCODHist(r){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${r.time}</td><td>${r.merchant}</td><td>฿${r.amt.toLocaleString('th-TH')}</td>`; document.getElementById('codHist').prepend(tr) }
+    renderCOD()
+
+    // Config demo
+    function addRate(){ const z=document.getElementById('zone').value.trim(); const r=Number(document.getElementById('rate').value||0); if(!z||!r){toast('กรอกโซน/เรทให้ครบ');return} const row=document.createElement('div'); row.className='row'; row.innerHTML=`<span>${z}</span><b>฿${r.toLocaleString('th-TH')}</b>`; document.getElementById('rateList').appendChild(row); toast('บันทึกเรทเรียบร้อย') }
+
+    // Reports demo
+    function exportReport(){ const t=document.getElementById('reportType').value; const time=new Date().toLocaleString('th-TH'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${time}</td><td>${t}.csv</td><td>สำเร็จ</td>`; document.getElementById('reportLog').prepend(tr); toast('กำลังสร้างรายงาน (เดโม)') }
+  </script>
+</body>
+</html>

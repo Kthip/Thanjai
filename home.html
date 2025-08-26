@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a2f8f">
+  <title>Thunjai Express — เลือกบทบาท (Sender / Rider / Hub / Admin / CS)</title>
+  <style>
+    :root{
+      --brand:#ffd54d;
+      --brand-blue:#0a2f8f;
+      --brand-soft:#fff6cc;
+      --ink:#0b2b27;
+      --bg:#f9fafb;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --radius:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
+    body{
+      background:var(--bg);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    header{ text-align:center; margin-bottom:2rem; }
+    header h1{ color:var(--brand-blue); font-size:1.5rem; margin-top:0.5rem; }
+    .roles{ display:grid; gap:1rem; width:100%; max-width:400px; }
+    .role-btn{ background:var(--brand); border:none; padding:1.2rem; border-radius:var(--radius); font-size:1.2rem; font-weight:600; color:var(--ink); cursor:pointer; transition:0.2s; }
+    .role-btn:hover{ background:#ffcd1a; }
+    .role-btn.cs{ background:#e6f0ff; color:var(--brand-blue); border:1px solid #cfe0ff; }
+    footer{ margin-top:2rem; font-size:0.9rem; color:var(--muted); }
+    .hint{ color:var(--muted); margin-top:.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Inline SVG logo (sample lightning bolt) -->
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="var(--brand-blue)"/>
+    </svg>
+    <h1>Thunjai Express</h1>
+    <p>เลือกบทบาทเพื่อเข้าสู่ระบบ</p>
+    <p class="hint">ระบบจะจำบทบาทในเบราว์เซอร์: <code>localStorage('thx_role')</code></p>
+  </header>
+
+  <main class="roles">
+    <button class="role-btn" onclick="selectRole('sender')">Sender (ผู้ส่ง)</button>
+    <button class="role-btn" onclick="selectRole('rider')">Rider (ไรเดอร์)</button>
+    <button class="role-btn" onclick="selectRole('hub')">Hub (คลัง)</button>
+    <button class="role-btn" onclick="selectRole('admin')">Admin (ผู้ดูแล)</button>
+    <button class="role-btn cs" onclick="selectRole('cs')">Customer Service (CS)</button>
+  </main>
+
+  <footer>
+    © 2025 Thunjai Express
+  </footer>
+
+  <script>
+    // เส้นทางไฟล์แบบ slug สั้น ๆ
+    const ROUTES = {
+      sender: 'sender.html',
+      rider: 'rider.html',
+      hub: 'hub.html',
+      admin: 'admin.html',
+      cs: 'cs.html'
+    };
+    const ROLE_MAP = { sender: 'Sender', rider: 'Rider', hub: 'Hub', admin: 'Admin', cs: 'CS' };
+
+    function selectRole(role){
+      const mapped = ROLE_MAP[role] || 'Guest';
+      localStorage.setItem('thx_role', mapped);
+      const url = ROUTES[role] || 'index.html';
+      try{ window.location.href = url }catch(e){ alert('เลือกบทบาทแล้ว: '+ mapped + '\\nไปที่: ' + url) }
+    }
+
+    // แสดงบทบาทที่เคยเลือกไว้ (ถ้ามี)
+    (function init(){
+      const r = localStorage.getItem('thx_role');
+      if(r){
+        const p = document.createElement('p');
+        p.className = 'hint';
+        p.textContent = 'บทบาทปัจจุบัน: ' + (r==='CS' ? 'Customer Service' : r);
+        document.querySelector('header').appendChild(p);
+      }
+    })();
+  </script>
+</body>
+</html>

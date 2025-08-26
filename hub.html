@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a2f8f" />
+  <title>Thunjai Express — Hub</title>
+  <style>
+    :root{
+      --brand:#ffd54d;
+      --brand-blue:#0a2f8f;
+      --brand-soft:#fff6cc;
+      --ink:#0b2b27;
+      --bg:#f6f8fb;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --radius:18px;
+      --hdr:56px; --bnv:64px; --maxw:520px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
+
+    .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg, #0a2f8f 0%, #0a2f8f 180px, var(--bg) 180px)}
+    .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;border-radius:0;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
+
+    header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
+    .logo svg{width:20px;height:20px;color:var(--brand-blue)}
+    .brand h1{font-size:1.05rem;margin:0;color:var(--brand-blue)}
+    .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
+    .hdr-actions{display:flex;gap:8px}
+    .iconbtn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;place-items:center;cursor:pointer}
+
+    main{flex:1;display:flex;flex-direction:column}
+    .content{flex:1;overflow:auto;padding:16px;display:none}
+    .content.active{display:block}
+
+    .grid{display:grid;gap:12px}
+    .grid.cols-2{grid-template-columns:1fr 1fr}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+    .card h3{margin:.2rem 0 .4rem 0;font-size:.96rem;color:#0a2f8f}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
+    .muted{color:var(--muted);font-size:.85rem}
+
+    .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--brand-blue);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
+    .btn.warn{background:#ffeee8;color:#b42318;border:1px solid #ffd2c4}
+    .btn.small{padding:8px 10px;font-weight:600}
+
+    /* list item */
+    .pkg{display:grid;gap:6px;border:1px solid var(--line);border-radius:14px;padding:10px}
+    .pkg .meta{display:flex;gap:8px;flex-wrap:wrap}
+    .pkg .tag{font-size:.72rem;background:#eef2ff;border:1px solid #dbe2ff;color:#223;padding:.18rem .5rem;border-radius:999px}
+
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
+    td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
+
+    nav.bnv{height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
+    .tab.active{color:var(--brand-blue);font-weight:700}
+
+    .fab{position:fixed;inset:auto calc(50% - 48px) 82px auto;width:96px;height:44px;border-radius:999px;background:var(--brand);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#0b2b27;border:1px solid #f2c93b;cursor:pointer}
+
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .sheet{width:100%;max-width:var(--maxw);height:92dvh;background:#fff;border-radius:20px;display:flex;flex-direction:column;overflow:hidden}
+    .sheet header{position:relative}
+    .sheet .body{flex:1;padding:16px;overflow:auto}
+
+    @media (prefers-color-scheme: dark){
+      body{background:#0b1020;color:#e5e7eb}
+      .phone{background:#0f152a}
+      header, .card, input, textarea, select, td{background:#0f152a;color:#e5e7eb;border-color:#223}
+      nav.bnv{background:#0f152a;border-color:#223}
+      .iconbtn{background:#0f152a;border-color:#223}
+      .fab{border-color:#d4b534}
+      .pkg{border-color:#223}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="phone">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-label="Thunjai Express">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="role-chip">Role: Hub</div>
+            <h1>Thunjai Express</h1>
+          </div>
+        </div>
+        <div class="hdr-actions">
+          <button class="iconbtn" onclick="openScan()" title="สแกนรับ/จ่าย">📷</button>
+          <button class="iconbtn" onclick="toast('ยังไม่มีแจ้งเตือนใหม่')" title="แจ้งเตือน">🔔</button>
+        </div>
+      </header>
+
+      <!-- TAB: Inbound -->
+      <section id="tab-inbound" class="content active">
+        <div class="grid">
+          <div class="card">
+            <div class="row"><h3>รับเข้า Hub</h3><span class="pill">สแกนเข้าคลัง</span></div>
+            <div class="row" style="margin-top:8px">
+              <input id="inSearch" placeholder="เลข Tracking / ชื่อผู้รับ" oninput="filterList('inbound')" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/>
+              <button class="btn small primary" onclick="openScan('HUB IN')">สแกน</button>
+            </div>
+          </div>
+
+          <div id="inList" class="grid" style="gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- TAB: Sort -->
+      <section id="tab-sort" class="content">
+        <div class="card">
+          <div class="row"><h3>คัดแยก / ติดฉลาก</h3><span class="pill">กำหนดเส้นทางปลายทาง</span></div>
+          <div class="row" style="margin-top:8px">
+            <select id="routeSelect" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px">
+              <option value="BKK-N">เขตเหนือ กทม.</option>
+              <option value="BKK-W">เขตตะวันตก กทม.</option>
+              <option value="BKK-S">เขตใต้ กทม.</option>
+              <option value="TH-CMN">เชียงใหม่</option>
+            </select>
+            <button class="btn small primary" onclick="assignRoute()">กำหนดเส้นทาง</button>
+          </div>
+        </div>
+        <div class="grid" style="margin-top:12px">
+          <div class="card">
+            <h3>รอคัดแยก</h3>
+            <div id="sortPending" class="grid" style="gap:10px"></div>
+          </div>
+          <div class="card">
+            <h3>จัดเส้นทางแล้ว</h3>
+            <div id="sorted" class="grid" style="gap:10px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Linehaul -->
+      <section id="tab-linehaul" class="content">
+        <div class="grid">
+          <div class="card">
+            <div class="row"><h3>โหลดขึ้นรถ / ปล่อยรถ</h3><span class="pill">LINEHAUL</span></div>
+            <div class="row" style="margin-top:6px">
+              <input id="lhSearch" placeholder="ค้นหาพาเลท/เลข Tracking" oninput="filterList('linehaul')" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/>
+              <button class="btn small primary" onclick="bulkLoad()">โหลดขึ้นรถ</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>พัสดุพร้อมโหลด</h3>
+            <div id="lhReady" class="grid" style="gap:10px"></div>
+          </div>
+          <div class="card">
+            <h3>กำลังขนส่ง</h3>
+            <div id="lhOnroad" class="grid" style="gap:10px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Destination Hub -->
+      <section id="tab-dest" class="content">
+        <div class="grid">
+          <div class="card">
+            <div class="row"><h3>รับเข้า Hub ปลายทาง</h3><span class="pill">LINEHAUL UNLOAD → HUB DEST IN</span></div>
+            <div class="row" style="margin-top:6px">
+              <button class="btn small primary" onclick="receiveDestAll()">รับเข้าเป็นชุด</button>
+              <button class="btn small ghost" onclick="toast('พิมพ์สติ๊กเกอร์ (ตัวอย่าง)')">พิมพ์สติ๊กเกอร์</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>พร้อมจ่ายไรเดอร์</h3>
+            <div id="destReady" class="grid" style="gap:10px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Assign -->
+      <section id="tab-assign" class="content">
+        <div class="card">
+          <div class="row"><h3>จ่ายงานให้ไรเดอร์</h3><span class="pill">OUT FOR DELIVERY</span></div>
+          <div class="row" style="margin-top:6px">
+            <select id="riderSelect" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px">
+              <option value="R01">R01 • คุณธันย์ใจ (12 ช่อง)</option>
+              <option value="R02">R02 • คุณพงศ์ (10 ช่อง)</option>
+              <option value="R03">R03 • คุณดาว (8 ช่อง)</option>
+            </select>
+            <button class="btn small primary" onclick="assignToRider()">จ่ายงาน</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>คิวรอจ่าย</h3>
+          <div id="assignQueue" class="grid" style="gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- TAB: Exceptions / Inventory -->
+      <section id="tab-exc" class="content">
+        <div class="grid">
+          <div class="card">
+            <div class="row"><h3>งานผิดปกติ</h3><span class="pill">EXCEPTION</span></div>
+            <div id="excList" class="grid" style="gap:10px;margin-top:8px"></div>
+          </div>
+          <div class="card">
+            <h3>สต็อกคงคลัง (พักค้างคืน)</h3>
+            <table>
+              <thead><tr><th>เลข</th><th>สถานะ</th><th>หมายเหตุ</th></tr></thead>
+              <tbody id="invTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <button class="fab" onclick="openScan()">📷 สแกน</button>
+
+      <nav class="bnv" role="tablist" aria-label="เมนูหลัก">
+        <div class="tab active" data-tab="inbound" onclick="switchTab(this)">📦<span>รับเข้า</span></div>
+        <div class="tab" data-tab="sort" onclick="switchTab(this)">🗂️<span>คัดแยก</span></div>
+        <div class="tab" data-tab="linehaul" onclick="switchTab(this)">🚚<span>ขนส่ง</span></div>
+        <div class="tab" data-tab="dest" onclick="switchTab(this)">🏬<span>ปลายทาง</span></div>
+        <div class="tab" data-tab="assign" onclick="switchTab(this)">📋<span>จ่ายงาน</span></div>
+        <div class="tab" data-tab="exc" onclick="switchTab(this)">⚠️<span>ข้อยกเว้น</span></div>
+      </nav>
+
+      <!-- Scanner Modal -->
+      <div id="scanModal" class="modal" aria-hidden="true">
+        <div class="sheet">
+          <header style="padding:12px 16px;border-bottom:1px solid var(--line)">
+            <div class="row" style="justify-content:flex-start;gap:10px">
+              <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+              <b id="scanTitle">สแกน</b>
+            </div>
+          </header>
+          <div class="body">
+            <div class="card" style="text-align:center">
+              <p class="muted">*เดโม: ยังไม่เปิดกล้องจริง</p>
+              <div style="aspect-ratio:16/9;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;margin-top:12px">🔲 กล้อง</div>
+              <div class="row" style="justify-content:center;margin-top:12px">
+                <button class="btn ghost" onclick="closeScan()">ปิด</button>
+                <button class="btn primary" onclick="mockScan()">สแกน</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ===== Utilities =====
+    function qs(sel){return document.querySelector(sel)}
+    function el(tag,html){const e=document.createElement(tag); if(html!==undefined) e.innerHTML=html; return e}
+    function toast(msg){
+      const t = el('div', msg)
+      t.style.cssText = 'position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99'
+      document.body.appendChild(t)
+      setTimeout(()=>t.remove(), 1800)
+    }
+    function switchTab(el){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
+      el.classList.add('active')
+      const tab = el.dataset.tab
+      document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'))
+      document.getElementById('tab-'+tab).classList.add('active')
+      document.getElementById('tab-'+tab).scrollTop = 0
+    }
+
+    // ===== Scanner Modal =====
+    let scanMode = 'HUB IN'
+    function openScan(mode){ scanMode = mode||'SCAN'; qs('#scanTitle').textContent = 'สแกน: '+scanMode; qs('#scanModal').classList.add('open'); qs('#scanModal').setAttribute('aria-hidden','false') }
+    function closeScan(){ qs('#scanModal').classList.remove('open'); qs('#scanModal').setAttribute('aria-hidden','true') }
+    function mockScan(){
+      closeScan();
+      const trk = 'TJX'+Math.random().toString(36).slice(2,7).toUpperCase()
+      toast('สแกน '+scanMode+' → '+trk)
+      // route by mode
+      if(scanMode==='HUB IN'){ addInbound({no:trk, name:'คุณนที', from:'R01', status:'HUB IN'}) }
+      else if(scanMode==='LINEHAUL LOAD'){ pushReadyToOnroad() }
+      else if(scanMode==='LINEHAUL UNLOAD'){ receiveDestAll() }
+    }
+
+    // ===== Demo Data =====
+    const inbound = [
+      {no:'TJX8AB12', name:'คุณนที', from:'R01', status:'HUB IN'},
+      {no:'TJX7CD34', name:'คุณพร', from:'R02', status:'HUB IN'}
+    ]
+    const pendingSort = [
+      {no:'TJX5EF56', name:'คุณดาว', to:'', status:'PENDING SORT'},
+      {no:'TJX2GH78', name:'คุณบอย', to:'', status:'PENDING SORT'}
+    ]
+    const sorted = []
+    const lhReady = []
+    const lhOnroad = []
+    const destReady = []
+    const assignQueue = []
+    const exceptions = [
+      {no:'TJX9XX99', status:'DAMAGED', note:'กล่องบุบ ต้องตรวจสอบ'},
+      {no:'TJX9RT12', status:'RETURN', note:'ปลายทางไม่อยู่บ้าน'}
+    ]
+    const inventory = [
+      {no:'TJX0ST11', status:'HOLD', note:'พักค้างคืนรอผู้รับติดต่อกลับ'},
+    ]
+
+    // ===== Render Helpers =====
+    function pkgView(p){
+      const div = el('div');
+      div.className='pkg'
+      div.innerHTML = `
+        <div class="row"><b>${p.no}</b><span class="pill">${p.status||''}</span></div>
+        <div class="meta">
+          ${p.name?`<span class="tag">👤 ${p.name}</span>`:''}
+          ${p.from?`<span class="tag">จาก ${p.from}</span>`:''}
+          ${p.to?`<span class="tag">เส้นทาง ${p.to}</span>`:''}
+        </div>
+        <div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start">
+          ${p.status==='HUB IN' ? `<button class='btn small primary' onclick="moveToSort('${p.no}')">ส่งเข้าคัดแยก</button>`:''}
+          ${p.status==='ROUTED' ? `<button class='btn small primary' onclick="markReadyLinehaul('${p.no}')">พร้อมโหลด</button>`:''}
+          ${p.status==='LH READY' ? `<button class='btn small primary' onclick="loadLinehaul('${p.no}')">โหลดขึ้นรถ</button>`:''}
+          ${p.status==='DEST READY' ? `<button class='btn small primary' onclick="queueAssign('${p.no}')">เข้าคิวจ่ายงาน</button>`:''}
+        </div>`
+      return div
+    }
+
+    function renderInbound(){
+      const box = qs('#inList'); box.innerHTML=''
+      inbound.forEach(p=> box.appendChild(pkgView(p)))
+    }
+    function renderSort(){
+      const p1 = qs('#sortPending'); p1.innerHTML=''
+      pendingSort.forEach(p=> p1.appendChild(pkgView(p)))
+      const p2 = qs('#sorted'); p2.innerHTML=''
+      sorted.forEach(p=> p2.appendChild(pkgView(p)))
+    }
+    function renderLinehaul(){
+      const r = qs('#lhReady'); r.innerHTML=''; lhReady.forEach(p=> r.appendChild(pkgView(p)))
+      const o = qs('#lhOnroad'); o.innerHTML=''; lhOnroad.forEach(p=> o.appendChild(pkgView(p)))
+    }
+    function renderDest(){
+      const d = qs('#destReady'); d.innerHTML=''; destReady.forEach(p=> d.appendChild(pkgView(p)))
+    }
+    function renderAssign(){
+      const q = qs('#assignQueue'); q.innerHTML=''; assignQueue.forEach(p=> q.appendChild(pkgView(p)))
+    }
+    function renderExceptions(){
+      const ex = qs('#excList'); ex.innerHTML=''
+      exceptions.forEach(x=>{
+        const it = el('div'); it.className='pkg';
+        it.innerHTML = `<div class='row'><b>${x.no}</b><span class='pill'>${x.status}</span></div><div class='muted'>${x.note||''}</div><div class='row' style='gap:8px;justify-content:flex-start'><button class='btn small ghost' onclick="toast('แนบรูป (ตัวอย่าง)')">แนบรูป</button><button class='btn small primary' onclick="resolveException('${x.no}')">ปิดเคส</button></div>`
+        ex.appendChild(it)
+      })
+      const inv = qs('#invTable'); inv.innerHTML=''
+      inventory.forEach(i=>{
+        const tr = el('tr'); tr.innerHTML = `<td>${i.no}</td><td>${i.status}</td><td>${i.note||''}</td>`; inv.appendChild(tr)
+      })
+    }
+
+    // ===== State Transitions =====
+    function addInbound(p){ inbound.unshift(p); renderInbound() }
+    function moveToSort(no){
+      const idx = inbound.findIndex(x=>x.no===no); if(idx>-1){ pendingSort.unshift({...inbound[idx], status:'PENDING SORT'}); inbound.splice(idx,1); renderInbound(); renderSort(); toast('ส่งเข้าคัดแยก') }
+    }
+    function assignRoute(){
+      const route = qs('#routeSelect').value
+      const picked = pendingSort.splice(0, Math.min(3, pendingSort.length))
+      picked.forEach(p=> sorted.unshift({...p, to:route, status:'ROUTED'}))
+      renderSort(); toast('กำหนดเส้นทาง '+route)
+    }
+    function markReadyLinehaul(no){
+      const idx = sorted.findIndex(x=>x.no===no); if(idx>-1){ lhReady.unshift({...sorted[idx], status:'LH READY'}); sorted.splice(idx,1); renderSort(); renderLinehaul(); toast('พร้อมโหลด') }
+    }
+    function bulkLoad(){
+      // move first 3 to on-road
+      const picked = lhReady.splice(0, Math.min(3, lhReady.length))
+      picked.forEach(p=> lhOnroad.unshift({...p, status:'LINEHAUL LOAD'}))
+      renderLinehaul(); toast('โหลดขึ้นรถ '+picked.length+' ชิ้น')
+    }
+    function loadLinehaul(no){
+      const idx = lhReady.findIndex(x=>x.no===no); if(idx>-1){ lhOnroad.unshift({...lhReady[idx], status:'LINEHAUL LOAD'}); lhReady.splice(idx,1); renderLinehaul(); toast('โหลดขึ้นรถ 1 ชิ้น') }
+    }
+    function pushReadyToOnroad(){ bulkLoad() }
+
+    function receiveDestAll(){
+      const picked = lhOnroad.splice(0, lhOnroad.length)
+      picked.forEach(p=> destReady.unshift({...p, status:'HUB DEST IN'}))
+      renderLinehaul(); renderDest(); toast('รับเข้า Hub ปลายทาง '+picked.length+' ชิ้น')
+    }
+    function queueAssign(no){
+      const idx = destReady.findIndex(x=>x.no===no); if(idx>-1){ assignQueue.unshift({...destReady[idx], status:'READY ASSIGN'}); destReady.splice(idx,1); renderDest(); renderAssign(); toast('เข้าคิวจ่ายงาน') }
+    }
+    function assignToRider(){
+      const rider = qs('#riderSelect').value
+      const picked = assignQueue.splice(0, Math.min(5, assignQueue.length))
+      toast('จ่ายงานให้ '+rider+' จำนวน '+picked.length+' ชิ้น')
+      renderAssign()
+    }
+
+    function resolveException(no){
+      const idx = exceptions.findIndex(x=>x.no===no); if(idx>-1){ exceptions.splice(idx,1); renderExceptions(); toast('ปิดเคสแล้ว') }
+    }
+
+    // ===== Filters =====
+    function filterList(area){
+      const q = (area==='inbound'? qs('#inSearch').value : qs('#lhSearch').value).toLowerCase()
+      const box = area==='inbound'? qs('#inList') : qs('#lhReady')
+      Array.from(box.children).forEach(e=>{ e.style.display = e.textContent.toLowerCase().includes(q)?'':'none' })
+    }
+
+    // ===== Seed Render =====
+    function seed(){
+      inbound.forEach(()=>{}); // keep arrays referenced
+      renderInbound(); renderSort(); renderLinehaul(); renderDest(); renderAssign(); renderExceptions();
+    }
+    seed()
+  </script>
+</body>
+</html>

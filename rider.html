@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a2f8f" />
+  <title>Thunjai Express — Rider</title>
+  <style>
+    :root{
+      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
+      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
+      --radius:18px; --hdr:56px; --bnv:64px; --maxw:480px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
+
+    .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
+    .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
+
+    header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
+    .logo svg{width:20px;height:20px;color:var(--brand-blue)}
+    .brand h1{font-size:1.05rem;margin:0;color:#0a2f8f}
+    .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
+    .hdr-actions{display:flex;gap:8px}
+    .iconbtn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;place-items:center;cursor:pointer}
+    .iconbtn:active{transform:scale(.98)}
+
+    .content{flex:1;overflow:auto;padding:16px;display:none}
+    .content.active{display:block}
+
+    .grid{display:grid;gap:12px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between;min-width:0}
+    .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
+    .big{font-size:1.4rem;font-weight:800}
+    .muted{color:var(--muted);font-size:.85rem}
+
+    /* Chips */
+    .chips{display:flex;gap:8px;overflow:auto hidden;white-space:nowrap;flex:1 1 auto;padding-bottom:4px;scrollbar-width:none}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#f8fafc;border:1px solid var(--line);font-weight:700;color:#334155;cursor:pointer;flex:0 0 auto}
+    .chip[aria-pressed="true"]{background:#e8f0ff;border-color:#cfe0ff;color:#0a2f8f}
+
+    .job{display:grid;gap:8px;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .job .meta{display:flex;gap:8px;flex-wrap:wrap}
+    .job .meta .tag{font-size:.72rem;background:#eef2ff;border:1px solid #dbe2ff;color:#223;padding:.18rem .5rem;border-radius:999px}
+    .job .addr{font-size:.9rem}
+    .job .act{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--brand-blue);color:#fff}
+    .btn.warn{background:#ffeee8;color:#b42318;border:1px solid #ffd2c4}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
+    .btn.small{padding:8px 10px;font-weight:600}
+
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
+    td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
+
+    /* Bottom nav (auto-fit) */
+    nav.bnv{
+      height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr))
+    }
+    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
+    .tab.active{color:var(--brand-blue);font-weight:700}
+
+    .fab{position:fixed;inset:auto calc(50% - 40px) 82px auto;width:80px;height:44px;border-radius:999px;background:var(--brand);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#0b2b27;border:1px solid #f2c93b;cursor:pointer}
+    .fab:active{transform:translateY(1px)}
+
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .sheet{width:100%;max-width:var(--maxw);height:92dvh;background:#fff;border-radius:20px;display:flex;flex-direction:column;overflow:hidden}
+    .sheet header{position:relative}
+    .sheet header h2{font-size:1rem;color:#0a2f8f}
+    .sheet .body{flex:1;padding:16px;overflow:auto}
+
+    @media (prefers-color-scheme: dark){
+      body{background:#0b1020;color:#e5e7eb}
+      .phone{background:#0f152a}
+      header,.card,input,textarea,select,td{background:#0f152a;color:#e5e7eb;border-color:#223}
+      nav.bnv{background:#0f152a;border-color:#223}
+      .iconbtn{background:#0f152a;border-color:#223}
+      .fab{border-color:#d4b534}
+      .job{border-color:#223}
+      .chip{background:#1b2035;border-color:#2a2f46;color:#cbd5e1}
+      .chip[aria-pressed="true"]{background:#2b3a5a;border-color:#3c4b6c;color:#f0f6ff}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="phone">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-label="Thunjai Express">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="role-chip">Role: Rider</div>
+            <h1>Thunjai Express</h1>
+          </div>
+        </div>
+        <div class="hdr-actions">
+          <button class="iconbtn" title="โหมดทำงาน" onclick="toggleShift()">🟢</button>
+          <button class="iconbtn" title="แจ้งเตือน" onclick="toast('ยังไม่มีแจ้งเตือนใหม่')">🔔</button>
+          <button class="iconbtn" title="สแกน" onclick="openScan()">📷</button>
+        </div>
+      </header>
+
+      <!-- TAB: Pickup -->
+      <section id="tab-pickup" class="content active">
+        <div class="grid">
+          <div class="row">
+            <h3>รับงาน (Pickup)</h3>
+            <span class="pill" id="shiftState">On Duty</span>
+          </div>
+          <div class="row">
+            <div class="chips" role="toolbar" aria-label="ตัวกรองสถานะ Pickup">
+              <button class="chip" id="chip-Pickup-ALL"      aria-pressed="true"  onclick="setStatus('Pickup','ALL')">ALL (0)</button>
+              <button class="chip" id="chip-Pickup-NEW"      aria-pressed="false" onclick="setStatus('Pickup','NEW')">NEW (0)</button>
+              <button class="chip" id="chip-Pickup-ACCEPTED" aria-pressed="false" onclick="setStatus('Pickup','ACCEPTED')">ACCEPTED (0)</button>
+              <button class="chip" id="chip-Pickup-PICKED"   aria-pressed="false" onclick="setStatus('Pickup','PICKED')">PICKED (0)</button>
+              <button class="chip" id="chip-Pickup-DONE"     aria-pressed="false" onclick="setStatus('Pickup','DONE')">DONE (0)</button>
+            </div>
+            <button class="btn small ghost" onclick="sortJobs('Pickup')">จัดเส้นทาง</button>
+          </div>
+          <div class="card">
+            <div class="row">
+              <div class="muted">คิวรับ: <b id="cnt-Pickup">0</b> | เสร็จสิ้น: <b id="done-Pickup">0</b></div>
+            </div>
+          </div>
+          <div id="jobList-Pickup" class="grid" style="gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- TAB: Delivery -->
+      <section id="tab-delivery" class="content">
+        <div class="grid">
+          <div class="row">
+            <h3>ส่งงาน (Delivery)</h3>
+            <span class="pill">COD: <b id="earn">฿0</b></span>
+          </div>
+          <div class="row">
+            <div class="chips" role="toolbar" aria-label="ตัวกรองสถานะ Delivery">
+              <button class="chip" id="chip-Delivery-ALL"      aria-pressed="true"  onclick="setStatus('Delivery','ALL')">ALL (0)</button>
+              <button class="chip" id="chip-Delivery-NEW"      aria-pressed="false" onclick="setStatus('Delivery','NEW')">NEW (0)</button>
+              <button class="chip" id="chip-Delivery-ACCEPTED" aria-pressed="false" onclick="setStatus('Delivery','ACCEPTED')">ACCEPTED (0)</button>
+              <button class="chip" id="chip-Delivery-PICKED"   aria-pressed="false" onclick="setStatus('Delivery','PICKED')">PICKED (0)</button>
+              <button class="chip" id="chip-Delivery-DONE"     aria-pressed="false" onclick="setStatus('Delivery','DONE')">DONE (0)</button>
+            </div>
+            <button class="btn small ghost" onclick="sortJobs('Delivery')">จัดเส้นทาง</button>
+          </div>
+          <div class="card">
+            <div class="row">
+              <div class="muted">คิวส่ง: <b id="cnt-Delivery">0</b> | ส่งสำเร็จ: <b id="done-Delivery">0</b></div>
+            </div>
+          </div>
+          <div id="jobList-Delivery" class="grid" style="gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- TAB: Route -->
+      <section id="tab-route" class="content">
+        <div class="card">
+          <h3>เส้นทางวันนี้</h3>
+          <p class="muted">*ตัวอย่างแผนที่ — สามารถเชื่อม Google Maps/Leaflet ได้</p>
+          <div style="aspect-ratio:3/4;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;margin-top:12px">🗺️ เส้นทาง/แผนที่</div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn ghost" onclick="toast('เริ่มนำทาง (ตัวอย่าง)')">เริ่มนำทาง</button>
+            <button class="btn primary" onclick="sortJobs()">จัดลำดับจุดแวะ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Scan (Live) -->
+      <section id="tab-scan" class="content">
+        <div class="card" style="margin-bottom:12px">
+          <h3>สแกน / ประวัติ (เรียลไทม์)</h3>
+          <div class="row">
+            <button class="btn primary" onclick="openScan()">สแกนตอนรับ/ส่ง</button>
+            <button class="btn ghost" onclick="clearScanLog()">ล้างประวัติ</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>เวลา</th><th>เลข</th><th>เหตุการณ์</th></tr></thead>
+        <tbody id="scanLog"></tbody>
+        </table>
+      </section>
+
+      <!-- TAB: History -->
+      <section id="tab-history" class="content">
+        <div class="grid">
+          <div class="card">
+            <div class="row">
+              <h3>ประวัติการรับ/ส่งงาน</h3>
+              <div class="row" style="gap:8px">
+                <input id="histDate" type="date" />
+                <button class="btn small ghost" onclick="setHistoryToday()">วันนี้</button>
+                <button class="btn small ghost" onclick="setHistoryYesterday()">เมื่อวาน</button>
+              </div>
+            </div>
+
+            <!-- ชิปส์ตัวกรองเหตุการณ์ -->
+            <div class="row" style="margin-top:10px">
+              <div id="histChips" class="chips" role="toolbar" aria-label="ตัวกรองเหตุการณ์ (History)">
+                <!-- เติมปุ่มจาก JS -->
+              </div>
+              <div class="pill">จำนวนเหตุการณ์: <b id="histCnt">0</b></div>
+            </div>
+
+            <div class="row" style="margin-top:8px">
+              <div class="muted">ช่วงวันที่: <b id="histDateLabel">—</b></div>
+              <div class="pill">COD รวมวันนั้น: <b id="histCOD">฿0</b></div>
+            </div>
+          </div>
+
+          <table>
+            <thead><tr><th>เวลา</th><th>เลขพัสดุ</th><th>ประเภท</th><th>เหตุการณ์</th><th>COD</th></tr></thead>
+            <tbody id="histTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: COD -->
+      <section id="tab-cod" class="content">
+        <div class="grid">
+          <div class="card">
+            <h3>กระทบยอด COD</h3>
+            <div class="row"><div class="big" id="codTotal">฿0</div><span class="pill">สะสมวันนี้</span></div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn primary" onclick="reconcileCOD()">ส่งยอดเข้า Hub</button>
+              <button class="btn ghost" onclick="toast('พิมพ์สลิป (ตัวอย่าง)')">พิมพ์สลิป</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>รายละเอียดลูกค้า (ล่าสุด)</h3>
+            <div id="codList" class="muted">ยังไม่มีรายการ</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Profile -->
+      <section id="tab-profile" class="content">
+        <div class="grid">
+          <div class="card">
+            <h3>โปรไฟล์ไรเดอร์</h3>
+            <div class="row"><span>ชื่อ</span><b>คุณธันย์ใจ</b></div>
+            <div class="row"><span>ทะเบียนรถ</span><b>กข-1234</b></div>
+            <div class="row"><span>ความจุ</span><b id="capacity">12 กล่อง</b></div>
+            <div class="row"><span>พื้นที่</span><b>บางแค / ภาษีเจริญ</b></div>
+          </div>
+          <div class="card">
+            <h3>ตั้งค่า</h3>
+            <div class="row">
+              <span>โหมดทำงาน</span>
+              <button class="btn small ghost" onclick="toggleShift()">สลับ</button>
+            </div>
+            <div class="row">
+              <span>รับออเดอร์อัตโนมัติ</span>
+              <button class="btn small ghost" onclick="toast('เปิดใช้งาน (ตัวอย่าง)')">เปิด/ปิด</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <button class="fab" onclick="openScan()">📷 สแกน</button>
+
+      <!-- Bottom Nav -->
+      <nav class="bnv" role="tablist" aria-label="เมนูหลัก">
+        <div class="tab active" data-tab="pickup"   onclick="switchTab(this)">📦<span>Pickup</span></div>
+        <div class="tab"         data-tab="delivery" onclick="switchTab(this)">🚚<span>Delivery</span></div>
+        <div class="tab"         data-tab="route"    onclick="switchTab(this)">🗺️<span>เส้นทาง</span></div>
+        <div class="tab"         data-tab="scan"     onclick="switchTab(this)">📷<span>สแกนสด</span></div>
+        <div class="tab"         data-tab="history"  onclick="switchTab(this)">🗂️<span>ประวัติ</span></div>
+        <div class="tab"         data-tab="cod"      onclick="switchTab(this)">💼<span>COD</span></div>
+        <div class="tab"         data-tab="profile"  onclick="switchTab(this)">👤<span>โปรไฟล์</span></div>
+      </nav>
+
+      <!-- Fullscreen Modal -->
+      <div id="scanModal" class="modal" aria-hidden="true">
+        <div class="sheet">
+          <header>
+            <div class="brand" style="padding:0 14px;gap:8px">
+              <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+              <h2>สแกนพัสดุ / ถ่ายรูปหลักฐาน</h2>
+            </div>
+          </header>
+          <div class="body">
+            <div class="card" style="text-align:center">
+              <p class="muted">*เดโม: ยังไม่เปิดกล้องจริง</p>
+              <div style="aspect-ratio:16/9;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;margin-top:12px">🔲 กล้อง</div>
+              <div class="row" style="justify-content:center;margin-top:12px">
+                <button class="btn ghost" onclick="closeScan()">ปิด</button>
+                <button class="btn primary" onclick="mockScan()">สแกน</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ===== Utilities =====
+    function switchTab(el){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
+      el.classList.add('active')
+      const tab = el.dataset.tab
+      document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'))
+      document.getElementById('tab-'+tab).classList.add('active')
+      document.getElementById('tab-'+tab).scrollTop = 0
+    }
+    function toast(msg){
+      const t = document.createElement('div')
+      t.textContent = msg
+      t.style.cssText = 'position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99'
+      document.body.appendChild(t)
+      setTimeout(()=>t.remove(), 1800)
+    }
+    const TH = 'th-TH'
+
+    // ===== Shift =====
+    let onDuty = true
+    function toggleShift(){
+      onDuty = !onDuty
+      document.getElementById('shiftState').textContent = onDuty ? 'On Duty' : 'Off Duty'
+      toast(onDuty ? 'เริ่มรับงาน' : 'หยุดรับงาน')
+    }
+
+    // ===== Data =====
+    const jobs = [
+      { id:'TJX1001', type:'Pickup',   name:'คุณนที', phone:'081-234-5678', addr:'ซ.สุขสวัสดิ์ 14, บางแค', note:'รับของ 2 กล่อง', cod:0,   status:'NEW' },
+      { id:'TJX1002', type:'Delivery', name:'คุณดาว', phone:'089-222-1111', addr:'ซ.เอกชัย 55, บางบอน',   note:'ส่งด่วน',       cod:450, status:'NEW' },
+      { id:'TJX1003', type:'Delivery', name:'คุณพร',  phone:'082-999-3344', addr:'พระราม 2 ซ.20',         note:'ของแตกหักง่าย', cod:0,   status:'ACCEPTED' },
+      { id:'TJX1004', type:'Pickup',   name:'คุณบอส', phone:'081-777-2222', addr:'เพชรเกษม 69',            note:'1 กล่องเล็ก',   cod:0,   status:'PICKED' },
+      { id:'TJX1005', type:'Delivery', name:'คุณกาน', phone:'081-345-9999', addr:'เอกชัย 76',              note:'COD',           cod:300, status:'PICKED' },
+      { id:'TJX1006', type:'Pickup',   name:'คุณโบ',  phone:'080-333-2222', addr:'บางแคเหนือ',             note:'4 กล่อง',       cod:0,   status:'DONE' },
+    ]
+    let earn = 0
+    const statusBySeg = { Pickup:'ALL', Delivery:'ALL' } // จำ filter แยกแท็บ
+    const STATUSES = ['ALL','NEW','ACCEPTED','PICKED','DONE']
+
+    // ===== History store =====
+    const scanEvents = [] // {time:Date, id:string, event:string}
+
+    // ===== Helpers =====
+    function getRows(seg, st){
+      let rows = jobs.filter(j=>j.type===seg)
+      if(st && st!=='ALL') rows = rows.filter(j=>j.status===st)
+      return rows
+    }
+    function countByStatus(seg){
+      const all = jobs.filter(j=>j.type===seg)
+      return {
+        ALL: all.length,
+        NEW: all.filter(j=>j.status==='NEW').length,
+        ACCEPTED: all.filter(j=>j.status==='ACCEPTED').length,
+        PICKED: all.filter(j=>j.status==='PICKED').length,
+        DONE: all.filter(j=>j.status==='DONE').length,
+      }
+    }
+    function updateChipCounts(seg){
+      const c = countByStatus(seg)
+      STATUSES.forEach(s=>{
+        const chip = document.getElementById(`chip-${seg}-${s}`)
+        if(chip){
+          chip.innerText = `${s} (${c[s]})`
+          chip.setAttribute('aria-pressed', statusBySeg[seg]===s ? 'true' : 'false')
+        }
+      })
+    }
+    function jobById(id){ return jobs.find(j=>j.id===id) }
+
+    function jobCardHTML(j){
+      const isDelivery = j.type==='Delivery'
+      const scanLabelAccepted = isDelivery ? 'สแกนส่งงาน' : 'สแกนรับงาน'
+      return `
+        <div class="job" id="job-${j.id}">
+          <div class="row">
+            <b>${j.id}</b>
+            <span class="tag">${j.type}</span>
+          </div>
+          <div class="addr">📍 ${j.addr}</div>
+          <div class="meta">
+            <span class="tag">👤 ${j.name}</span>
+            <span class="tag">📞 ${j.phone}</span>
+            ${j.cod?`<span class="tag">COD ฿${j.cod}</span>`:''}
+            <span class="tag">สถานะ: ${j.status}</span>
+          </div>
+          <div class="act">
+            ${j.status==='NEW' ? `
+              <button class="btn small primary" onclick="acceptJob('${j.id}')">รับงาน</button>
+              <button class="btn small ghost"   onclick="rejectJob('${j.id}')">ปฏิเสธ</button>
+            `: ''}
+            ${j.status==='ACCEPTED' ? `
+              <button class="btn small primary" onclick="updateJob('${j.id}','PICKED')">${scanLabelAccepted}</button>
+              <button class="btn small ghost"   onclick="navigate('${j.id}')">นำทาง</button>
+            `: ''}
+            ${j.status==='PICKED' ? `
+              ${isDelivery
+                ? `<button class="btn small primary" onclick="deliver('${j.id}', true)">ส่งสำเร็จ</button>
+                   <button class="btn small warn"    onclick="deliver('${j.id}', false)">ส่งไม่สำเร็จ</button>`
+                : `<button class="btn small primary" onclick="finishPickup('${j.id}')">เสร็จสิ้นรับของ</button>`}
+            `: ''}
+            ${j.status==='DONE' ? `<span class="muted">ปิดงานแล้ว</span>`: ''}
+          </div>
+        </div>`
+    }
+
+    function renderSegment(seg){
+      updateChipCounts(seg)
+      const st = statusBySeg[seg]
+      const rows = getRows(seg, st)
+
+      const doneCnt = jobs.filter(j=>j.type===seg && j.status==='DONE').length
+      const waitingCnt = rows.filter(j=>j.status!=='DONE').length
+      document.getElementById(`cnt-${seg}`).textContent  = (st==='DONE') ? rows.length : waitingCnt
+      document.getElementById(`done-${seg}`).textContent = doneCnt
+      if(seg==='Delivery'){
+        document.getElementById('earn').textContent = '฿'+ earn.toLocaleString(TH)
+      }
+      const box = document.getElementById(`jobList-${seg}`)
+      box.innerHTML = rows.length ? rows.map(jobCardHTML).join('') : `<div class="muted">ไม่พบงานในสถานะที่เลือก</div>`
+    }
+    function renderAll(){ renderSegment('Pickup'); renderSegment('Delivery'); }
+
+    // ===== Actions (with scanEvents log) =====
+    function acceptJob(id){
+      const j = jobById(id); if(!j) return
+      j.status = 'ACCEPTED'
+      renderAll(); logScan(j.id,'ACCEPT JOB')
+    }
+    function rejectJob(id){
+      const idx = jobs.findIndex(x=>x.id===id); if(idx<0) return
+      logScan(jobs[idx].id,'REJECT JOB')
+      jobs.splice(idx,1)
+      renderAll()
+    }
+    function updateJob(id, status){
+      const j = jobById(id); if(!j) return
+      j.status = status
+      renderAll(); logScan(j.id,status) // จะเป็น 'PICKED'
+    }
+    function finishPickup(id){
+      const j = jobById(id); if(!j) return
+      j.status = 'DONE'
+      renderAll(); logScan(j.id,'PICKUP DONE')
+    }
+    function deliver(id, success){
+      const j = jobById(id); if(!j) return
+      j.status = 'DONE'
+      if(success){
+        earn += j.cod||0
+        document.getElementById('codTotal').textContent = '฿'+ earn.toLocaleString(TH)
+        addCODCustomer(j)
+      }
+      renderAll(); logScan(j.id, success?'DELIVERED':'DELIVERY FAILED')
+    }
+    function navigate(id){
+      const j = jobById(id); if(!j) return
+      toast('เปิดนำทางไปยัง: '+ j.addr)
+    }
+
+    // ===== Filters per tab =====
+    function setStatus(seg, st){
+      if(!STATUSES.includes(st)) st='ALL'
+      statusBySeg[seg] = st
+      renderSegment(seg)
+    }
+
+    // ===== Scan modal & log =====
+    function openScan(){ document.getElementById('scanModal').classList.add('open'); document.getElementById('scanModal').setAttribute('aria-hidden','false') }
+    function closeScan(){ document.getElementById('scanModal').classList.remove('open'); document.getElementById('scanModal').setAttribute('aria-hidden','true') }
+
+    function logScan(no, evt){
+      const tb = document.getElementById('scanLog')
+      const t  = new Date()
+      const tStr = t.toLocaleString(TH)
+      // Live table
+      const tr = document.createElement('tr')
+      tr.innerHTML = `<td>${tStr}</td><td>${no}</td><td>${evt}</td>`
+      tb.prepend(tr)
+      // Store for history
+      scanEvents.push({ time: t, id: no, event: evt })
+      // If history tab open, refresh it
+      if(document.getElementById('tab-history').classList.contains('active')) renderHistory()
+    }
+    function mockScan(){
+      closeScan(); toast('สแกนสำเร็จ (ตัวอย่าง)');
+      logScan('TJX'+Math.random().toString(36).slice(2,7).toUpperCase(),'SCAN')
+    }
+    function clearScanLog(){
+      document.getElementById('scanLog').innerHTML = ''
+      scanEvents.length = 0
+      if(document.getElementById('tab-history').classList.contains('active')) renderHistory()
+    }
+
+    // ===== COD =====
+    function addCODCustomer(j){
+      const box = document.getElementById('codList')
+      if(box.textContent.includes('ยังไม่มีรายการ')) box.textContent=''
+      const div = document.createElement('div')
+      div.className='row'
+      div.innerHTML = `<span>${j.id} • ${j.name}</span><b>฿${(j.cod||0).toLocaleString(TH)}</b>`
+      box.appendChild(div)
+    }
+    function reconcileCOD(){
+      const t = new Date().toLocaleString(TH)
+      toast('ส่งยอด COD เข้า Hub แล้ว '+t)
+    }
+
+    // ===== History: Event filter chips =====
+    const histEventOptions = [
+      'ALL',
+      'DELIVERED',
+      'PICKED',
+      'ACCEPT JOB',
+      'REJECT JOB',
+      'PICKUP DONE',
+      'DELIVERY FAILED',
+      'SCAN',
+    ]
+    let histEventFilter = 'ALL'
+
+    function setHistEventFilter(name){
+      if(!histEventOptions.includes(name)) name = 'ALL'
+      histEventFilter = name
+      ;[...document.querySelectorAll('#histChips .chip')].forEach(ch=>{
+        ch.setAttribute('aria-pressed', ch.dataset.name===name ? 'true' : 'false')
+      })
+      renderHistory()
+    }
+
+    function countEventsForDate(yyyy_mm_dd_str){
+      const res = {}
+      let all = 0
+      scanEvents.forEach(e=>{
+        if(yyyy_mm_dd(e.time) !== yyyy_mm_dd_str) return
+        all++
+        res[e.event] = (res[e.event]||0) + 1
+      })
+      res.__ALL__ = all
+      histEventOptions.forEach(k=>{ if(!(k in res) && k!=='ALL') res[k]=0 })
+      return res
+    }
+
+    function renderHistChips(){
+      const wrap = document.getElementById('histChips')
+      const selDate = document.getElementById('histDate').value
+      const counts = countEventsForDate(selDate)
+      wrap.innerHTML = histEventOptions.map(name=>{
+        const n = counts[name] ?? (name==='ALL' ? (counts.__ALL__||0) : 0)
+        return `<button class="chip" data-name="${name}" aria-pressed="${histEventFilter===name?'true':'false'}"
+                  onclick="setHistEventFilter('${name.replace(/'/g, "\\'")}')">${name} (${n})</button>`
+      }).join('')
+    }
+
+    // ===== History tab core =====
+    function yyyy_mm_dd(d){
+      const y = d.getFullYear()
+      const m = String(d.getMonth()+1).padStart(2,'0')
+      const day = String(d.getDate()).padStart(2,'0')
+      return `${y}-${m}-${day}`
+    }
+    function setHistoryToday(){
+      const inp = document.getElementById('histDate')
+      inp.value = yyyy_mm_dd(new Date())
+      histEventFilter = 'ALL'
+      renderHistory()
+    }
+    function setHistoryYesterday(){
+      const inp = document.getElementById('histDate')
+      const d = new Date(); d.setDate(d.getDate()-1)
+      inp.value = yyyy_mm_dd(d)
+      histEventFilter = 'ALL'
+      renderHistory()
+    }
+
+    function renderHistory(){
+      const inp = document.getElementById('histDate')
+      const sel = inp.value
+      if(!sel) return
+
+      // chips first (depends on date)
+      renderHistChips()
+
+      const tbody = document.getElementById('histTable')
+      const rowsAll = scanEvents
+        .filter(e => yyyy_mm_dd(e.time) === sel)
+        .sort((a,b)=> b.time - a.time)
+
+      const rows = histEventFilter==='ALL' ? rowsAll : rowsAll.filter(e=> e.event === histEventFilter)
+
+      document.getElementById('histDateLabel').textContent =
+        new Date(sel+'T00:00').toLocaleDateString(TH, {year:'numeric',month:'short',day:'numeric'})
+      document.getElementById('histCnt').textContent = rows.length
+
+      tbody.innerHTML = rows.map(e=>{
+        const j = jobById(e.id) || {}
+        const isDelivery = (j.type==='Delivery')
+        const cod = (e.event==='DELIVERED' && isDelivery) ? (j.cod||0) : 0
+        return `<tr>
+          <td>${e.time.toLocaleTimeString(TH, {hour:'2-digit', minute:'2-digit'})}</td>
+          <td>${e.id}</td>
+          <td>${j.type||'-'}</td>
+          <td>${e.event}</td>
+          <td>${cod? '฿'+cod.toLocaleString(TH): '-'}</td>
+        </tr>`
+      }).join('')
+
+      const codSum = rowsAll.reduce((sum,e)=>{
+        const j = jobById(e.id)
+        const isDelivery = j && j.type==='Delivery'
+        if(e.event==='DELIVERED' && isDelivery) return sum + (j.cod||0)
+        return sum
+      },0)
+      document.getElementById('histCOD').textContent = '฿'+ codSum.toLocaleString(TH)
+    }
+
+    // ===== Init =====
+    renderAll()
+    // History defaults to today
+    const histInput = document.getElementById('histDate')
+    histInput.value = yyyy_mm_dd(new Date())
+    histInput.addEventListener('change', ()=>{
+      histEventFilter = 'ALL'
+      renderHistory()
+    })
+    renderHistory()
+  </script>
+</body>
+</html>

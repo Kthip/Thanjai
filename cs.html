@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a2f8f" />
+  <title>Thunjai Express — Customer Service</title>
+  <style>
+    :root{
+      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
+      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
+      --radius:18px; --hdr:56px; --bnv:64px; --maxw:520px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
+    .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
+    .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
+    header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
+    .logo svg{width:20px;height:20px;color:var(--brand-blue)}
+    .brand h1{font-size:1.05rem;margin:0;color:var(--brand-blue)}
+    .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
+    .hdr-actions{display:flex;gap:8px}
+    .iconbtn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;place-items:center;cursor:pointer}
+    .content{flex:1;overflow:auto;padding:16px;display:none}
+    .content.active{display:block}
+    .grid{display:grid;gap:12px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+    .card h3{margin:.2rem 0 .4rem 0;font-size:.96rem;color:#0a2f8f}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
+    .muted{color:var(--muted);font-size:.85rem}
+    .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--brand-blue);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
+    td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
+    nav.bnv{height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
+    .tab.active{color:var(--brand-blue);font-weight:700}
+    @media (prefers-color-scheme: dark){
+      body{background:#0b1020;color:#e5e7eb}
+      .phone{background:#0f152a}
+      header,.card,td{background:#0f152a;color:#e5e7eb;border-color:#223}
+      nav.bnv{background:#0f152a;border-color:#223}
+      .iconbtn{background:#0f152a;border-color:#223}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="phone">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-label="Thunjai Express"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+          <div>
+            <div class="role-chip">Role: Customer Service</div>
+            <h1>Thunjai Express</h1>
+          </div>
+        </div>
+        <div class="hdr-actions">
+          <button class="iconbtn" onclick="toast('ยังไม่มีแจ้งเตือนใหม่')">🔔</button>
+        </div>
+      </header>
+
+      <!-- Inbox / Queue -->
+      <section id="tab-inbox" class="content active">
+        <div class="grid">
+          <div class="card">
+            <div class="row"><h3>คิวติดต่อเข้ามา</h3><span class="pill" id="qSize">รอ 0</span></div>
+            <div class="row" style="margin-top:8px">
+              <input id="inboxSearch" placeholder="ค้นหา: เลข Tracking / ชื่อ / เบอร์" oninput="filterInbox()" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/>
+              <button class="btn primary" onclick="assignCase()">รับเคส</button>
+            </div>
+          </div>
+          <div id="inboxList" class="grid" style="gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- Case Detail -->
+      <section id="tab-case" class="content">
+        <div class="grid">
+          <div class="card">
+            <h3>รายละเอียดเคส</h3>
+            <div id="caseView" class="muted">ยังไม่ได้เลือกเคส</div>
+          </div>
+          <div class="card">
+            <h3>บันทึกการสื่อสาร</h3>
+            <div id="msgList" class="grid" style="gap:8px"></div>
+            <div class="row" style="margin-top:8px">
+              <input id="msgInput" placeholder="พิมพ์ข้อความถึงลูกค้า" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/>
+              <button class="btn primary" onclick="sendMsg()">ส่ง</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tracking Helper -->
+      <section id="tab-trk" class="content">
+        <div class="card" style="margin-bottom:12px">
+          <h3>ค้นหา Tracking</h3>
+          <div class="row"><input id="trkSearch" placeholder="เลข Tracking" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn ghost" onclick="searchTrk()">ค้นหา</button></div>
+        </div>
+        <table>
+          <thead><tr><th>เลข</th><th>สถานะ</th><th>อัปเดตล่าสุด</th></tr></thead>
+          <tbody id="trkTable"></tbody>
+        </table>
+      </section>
+
+      <!-- Refund / COD / Issue Forms -->
+      <section id="tab-forms" class="content">
+        <div class="grid">
+          <div class="card">
+            <h3>ร้องขอคืนเงิน/ชดเชย</h3>
+            <div class="row"><input id="refundNo" placeholder="เลข Tracking" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><input id="refundAmt" type="number" placeholder="ยอด (฿)" style="width:140px;padding:10px;border:1px solid var(--line);border-radius:10px"/></div>
+            <div class="row" style="margin-top:8px"><input id="refundReason" placeholder="เหตุผล" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn primary" onclick="submitRefund()">ส่งคำขอ</button></div>
+          </div>
+          <div class="card">
+            <h3>ตรวจสอบ COD ให้ลูกค้า</h3>
+            <div class="row"><input id="codNo" placeholder="เลข Tracking/รหัสอ้างอิง" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn ghost" onclick="checkCOD()">ตรวจสอบ</button></div>
+            <div id="codResult" class="muted" style="margin-top:8px">—</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Knowledge Base -->
+      <section id="tab-kb" class="content">
+        <div class="card">
+          <h3>บทความช่วยเหลือ</h3>
+          <div class="grid" style="gap:8px" id="kbList"></div>
+        </div>
+      </section>
+
+      <nav class="bnv" role="tablist">
+        <div class="tab active" data-tab="inbox" onclick="switchTab(this)">📥<span>Inbox</span></div>
+        <div class="tab" data-tab="case" onclick="switchTab(this)">🗂️<span>Case</span></div>
+        <div class="tab" data-tab="trk" onclick="switchTab(this)">🔎<span>Tracking</span></div>
+        <div class="tab" data-tab="forms" onclick="switchTab(this)">💬<span>Forms</span></div>
+        <div class="tab" data-tab="kb" onclick="switchTab(this)">📚<span>KB</span></div>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');const tab=el.dataset.tab;document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active')}
+    function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+
+    // Inbox demo
+    const inbox=[{no:'TJX8AB12',name:'คุณนที',topic:'ตามหาของ',chan:'LINE',time:'10:55'},{no:'TJX7CD34',name:'คุณพร',topic:'เปลี่ยนที่อยู่',chan:'โทร',time:'10:50'},{no:'TJX5EF56',name:'คุณดาว',topic:'สอบถาม COD',chan:'Facebook',time:'10:45'}]
+    function renderInbox(){ document.getElementById('qSize').textContent = 'รอ '+inbox.length; document.getElementById('inboxList').innerHTML = inbox.map(c=>`<div class='card'><div class='row'><b>${c.no}</b><span class='pill'>${c.chan}</span></div><div class='muted'>${c.name} • ${c.topic} • ${c.time}</div><div class='row' style='margin-top:8px'><button class='btn primary' onclick="openCase('${c.no}')">เปิดเคส</button><button class='btn ghost' onclick='closeTicket()'>ปิดคิว</button></div></div>`).join('') }
+    function filterInbox(){ const q=document.getElementById('inboxSearch').value.toLowerCase(); Array.from(document.querySelectorAll('#inboxList .card')).forEach(it=>{it.style.display = it.textContent.toLowerCase().includes(q)?'':'none'}) }
+    function assignCase(){ toast('รับเคสเข้าคิวของฉัน (เดโม)') }
+    function openCase(no){ switchTo('case'); currentCase = {no, status:'OPEN'}; document.getElementById('caseView').innerHTML = `<div class='row'><b>${no}</b><span class='pill'>OPEN</span></div><div class='muted'>หัวข้อ: ตัวอย่างคำร้องเรียน / ขอข้อมูล</div>`; document.getElementById('msgList').innerHTML = '' }
+    function closeTicket(){ toast('ปิดคิว (เดโม)') }
+
+    // Case messaging demo
+    let currentCase = null
+    function sendMsg(){ const input=document.getElementById('msgInput'); if(!input.value.trim()){toast('พิมพ์ข้อความก่อน');return} const div=document.createElement('div'); div.className='row'; div.innerHTML = `<span class='muted'>ฉัน</span><b>${input.value}</b>`; document.getElementById('msgList').appendChild(div); input.value=''; toast('ส่งแล้ว') }
+
+    // Tracking helper demo
+    const trkRows=[{no:'TJX8AB12',status:'OUT FOR DELIVERY',ts:'10:40'},{no:'TJX7CD34',status:'HUB IN',ts:'09:58'}]
+    function searchTrk(){ const box=document.getElementById('trkTable'); const q=document.getElementById('trkSearch').value.trim(); box.innerHTML = trkRows.filter(r=>!q||r.no.includes(q)).map(r=>`<tr><td>${r.no}</td><td>${r.status}</td><td>${r.ts}</td></tr>`).join('') || '<tr><td colspan="3" class="muted">ไม่พบข้อมูล</td></tr>' }
+
+    // Forms demo
+    function submitRefund(){ const no=document.getElementById('refundNo').value.trim(); const amt=Number(document.getElementById('refundAmt').value||0); if(!no||!amt){toast('กรอกเลขและยอดให้ครบ');return} toast('ส่งคำขอคืนเงินแล้ว'); document.getElementById('refundNo').value=''; document.getElementById('refundAmt').value=''; document.getElementById('refundReason').value='' }
+    function checkCOD(){ const x=document.getElementById('codNo').value.trim(); document.getElementById('codResult').textContent = x?`ผลตรวจสอบ: โอนไปยังผู้ขายเมื่อ 09:30 น.`:'—' }
+
+    // KB demo
+    const kb=[{t:'ปรับเปลี่ยนที่อยู่ปลายทาง',s:'ขั้นตอนยืนยันตัวตนและเงื่อนไข'},{t:'ของเสียหาย/สูญหาย ทำอย่างไร',s:'กรอกแบบฟอร์ม + แนบรูป'},{t:'การคำนวณ COD และรอบโอน',s:'รอบโอน จ.-ศ. 2 ช่วง'}]
+    function renderKB(){ document.getElementById('kbList').innerHTML = kb.map(a=>`<div class='row'><b>${a.t}</b><span class='muted'>${a.s}</span></div>`).join('') }
+
+    function switchTo(tab){ const el=document.querySelector(`.tab[data-tab='${tab}']`); if(el) switchTab(el) }
+
+    // Seed
+    renderInbox(); renderKB(); searchTrk()
+  </script>
+</body>
+</html>
