@@ -8,14 +8,9 @@
   <style>
     :root{
   --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
-  /* Readability-first palette */
-  --ink:#0b1726;
-  --bg:#ffffff;
-  --muted:#475569;
-  --line:#d5dbe3;
-
+  --ink:#0b1726; --bg:#ffffff; --muted:#475569; --line:#d5dbe3;
   --radius:18px; --hdr:56px; --bnv:64px; --maxw:480px;
-  --focus:#94a3b8;
+  --focus:#94a3b8; 
   --focus-ring: 0 0 0 3px rgba(148,163,184,.35);
 }
     *{box-sizing:border-box}
@@ -43,7 +38,7 @@
     .row{display:flex;gap:10px;align-items:center;justify-content:space-between;min-width:0}
     .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
     .big{font-size:1.4rem;font-weight:800}
-    .muted{color:var(--muted);font-size:.88rem}
+    .muted{color:var(--muted);font-size:.85rem}
 
     /* Chips */
     .chips{display:flex;gap:8px;overflow:auto hidden;white-space:nowrap;flex:1 1 auto;padding-bottom:4px;scrollbar-width:none}
@@ -138,6 +133,7 @@
     /* Dark mode */
     @media (prefers-color-scheme: dark){
       body{background:#0b1020;color:#e5e7eb
+
   /* Bottom tabs - Dark Mode */
   .tab{background:#172033;color:#e5eaf3;}
   .tab:hover{background:#20324e;}
