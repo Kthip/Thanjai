@@ -7,12 +7,19 @@
   <title>Thunjai Express — Rider</title>
   <style>
     :root{
-      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
-      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
-      --radius:18px; --hdr:56px; --bnv:64px; --maxw:480px;
-    }
+  --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
+  /* Readability-first palette */
+  --ink:#0b1726;
+  --bg:#ffffff;
+  --muted:#475569;
+  --line:#d5dbe3;
+
+  --radius:18px; --hdr:56px; --bnv:64px; --maxw:480px;
+  --focus:#94a3b8;
+  --focus-ring: 0 0 0 3px rgba(148,163,184,.35);
+}
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
 
     .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
@@ -21,7 +28,7 @@
     header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
     .brand{display:flex;gap:10px;align-items:center}
     .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
-    .logo svg{width:20px;height:20px;color:var(--brand-blue)}
+    .logo svg{width:20px;height:20px;color:#0a2f8f}
     .brand h1{font-size:1.05rem;margin:0;color:#0a2f8f}
     .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
     .hdr-actions{display:flex;gap:8px}
@@ -36,40 +43,91 @@
     .row{display:flex;gap:10px;align-items:center;justify-content:space-between;min-width:0}
     .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
     .big{font-size:1.4rem;font-weight:800}
-    .muted{color:var(--muted);font-size:.85rem}
+    .muted{color:var(--muted);font-size:.88rem}
 
     /* Chips */
     .chips{display:flex;gap:8px;overflow:auto hidden;white-space:nowrap;flex:1 1 auto;padding-bottom:4px;scrollbar-width:none}
     .chips::-webkit-scrollbar{display:none}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#f8fafc;border:1px solid var(--line);font-weight:700;color:#334155;cursor:pointer;flex:0 0 auto}
-    .chip[aria-pressed="true"]{background:#e8f0ff;border-color:#cfe0ff;color:#0a2f8f}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:#f3f4f6;border:1px solid #d7dde6;font-size:.82rem;font-weight:650;color:#1f2937;cursor:pointer;flex:0 0 auto}
+    .chip[aria-pressed="true"]{background:#dbeafe;border-color:#bfd7ff;color:#0a2f8f}
+    /* ✅ เวอร์ชันเล็กใช้ในหน้า History เท่านั้น */
+    .chips.small .chip{padding:4px 8px;font-size:.7rem}
 
-    .job{display:grid;gap:8px;border:1px solid var(--line);border-radius:14px;padding:12px}
-    .job .meta{display:flex;gap:8px;flex-wrap:wrap}
-    .job .meta .tag{font-size:.72rem;background:#eef2ff;border:1px solid #dbe2ff;color:#223;padding:.18rem .5rem;border-radius:999px}
-    .job .addr{font-size:.9rem}
-    .job .act{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+    /* Job cards */
+    .job{display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px}
+    .job .meta{display:flex;gap:6px;flex-wrap:wrap}
+    .job .meta .tag{font-size:.7rem;background:#eef2ff;border:1px solid #dbe2ff;color:#223;padding:.15rem .45rem;border-radius:999px}
+    .job .addr{font-size:.85rem}
+    .job .act{display:flex;gap:6px;flex-wrap:wrap}
+    .btn{appearance:none;border:none;border-radius:10px;padding:8px 10px;font-weight:700;font-size:.85rem;cursor:pointer}
     .btn.primary{background:var(--brand-blue);color:#fff}
     .btn.warn{background:#ffeee8;color:#b42318;border:1px solid #ffd2c4}
     .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
-    .btn.small{padding:8px 10px;font-weight:600}
+    .btn.small{padding:6px 8px;font-weight:600;font-size:.8rem}
 
-    table{width:100%;border-collapse:separate;border-spacing:0 10px}
-    th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
-    td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
+    /* Table */
+    table{width:100%;border-collapse:separate;border-spacing:0 6px}
+    th{font-size:.75rem;text-align:left;color:#334155;font-weight:600}
+    td{background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;font-size:.8rem}
 
-    /* Bottom nav (auto-fit) */
+    /* Bottom nav */
     nav.bnv{
       height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
       display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr))
     }
-    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
-    .tab.active{color:var(--brand-blue);font-weight:700}
+    .tab{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  color:#1f2937;
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+  padding:8px 4px;
+  transition:background .2s, color .2s;
+  background:#f9fafb;       /* พื้นหลังอ่อนลง */
+}
+.tab:hover{
+  background:#e5e7eb;       /* hover เทาเข้มกว่า */
+}
+.tab.active{
+  background:var(--brand-blue);  /* สีเข้มขึ้นเมื่อ active */
+  color:#ffffff;                 /* ตัวอักษรเป็นสีขาว */
+  font-weight:700;
+}
 
-    .fab{position:fixed;inset:auto calc(50% - 40px) 82px auto;width:80px;height:44px;border-radius:999px;background:var(--brand);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#0b2b27;border:1px solid #f2c93b;cursor:pointer}
+    .fab{position:fixed;inset:auto calc(50% - 40px) 82px auto;width:80px;height:40px;border-radius:999px;background:var(--brand);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;color:#0b2b27;border:1px solid #f2c93b;cursor:pointer;font-size:.85rem}
     .fab:active{transform:translateY(1px)}
 
+    /* Event badges for history */
+    .ev{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:700;border:1px solid transparent}
+    .ev.DELIVERED{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+    .ev.PICKED{background:#eff6ff;color:#1e40af;border-color:#c7d2fe}
+    .ev.ACCEPTJOB{background:#f0f9ff;color:#075985;border-color:#bae6fd}
+    .ev.REJECTJOB{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    .ev.PICKUPDONE{background:#f5f3ff;color:#5b21b6;border-color:#ddd6fe}
+    .ev.DELIVERYFAILED{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+    .ev.SCAN{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
+
+    /* History fit-to-screen */
+    #tab-history { padding: 6px 12px 12px; }
+    .hist-layout{height:calc(100dvh - var(--hdr) - var(--bnv));display:flex;flex-direction:column;gap:6px;}
+    .hist-toolbar{position:sticky;top:0;z-index:3;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;}
+    .hist-bar,.hist-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .stat-cards.compact{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .stat.compact{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:6px;text-align:center}
+    .stat.compact .num{font-weight:800;font-size:.95rem}
+    .stat.compact .lbl{font-size:.7rem;color:#64748b}
+    .hist-scroll{flex:1;min-height:0;overflow:auto;display:block}
+    .card.hist-list{margin:0;padding:10px}
+    .hist-scroll table thead th{position:sticky;top:0;z-index:1;background:#fff}
+    #histTable td,#histTable th{padding:6px 8px;font-size:.78rem}
+    #histTable td.muted{font-size:.75rem;color:#64748b}
+    .empty{padding:16px;border:1px dashed var(--line);border-radius:10px;text-align:center;color:#64748b}
+
+    /* Modal (Fullscreen) */
     .modal{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;padding:20px}
     .modal.open{display:flex}
     .sheet{width:100%;max-width:var(--maxw);height:92dvh;background:#fff;border-radius:20px;display:flex;flex-direction:column;overflow:hidden}
@@ -77,8 +135,14 @@
     .sheet header h2{font-size:1rem;color:#0a2f8f}
     .sheet .body{flex:1;padding:16px;overflow:auto}
 
+    /* Dark mode */
     @media (prefers-color-scheme: dark){
-      body{background:#0b1020;color:#e5e7eb}
+      body{background:#0b1020;color:#e5e7eb
+  /* Bottom tabs - Dark Mode */
+  .tab{background:#172033;color:#e5eaf3;}
+  .tab:hover{background:#20324e;}
+  .tab.active{background:var(--brand-blue);color:#ffffff;font-weight:700;}
+}
       .phone{background:#0f152a}
       header,.card,input,textarea,select,td{background:#0f152a;color:#e5e7eb;border-color:#223}
       nav.bnv{background:#0f152a;border-color:#223}
@@ -87,8 +151,18 @@
       .job{border-color:#223}
       .chip{background:#1b2035;border-color:#2a2f46;color:#cbd5e1}
       .chip[aria-pressed="true"]{background:#2b3a5a;border-color:#3c4b6c;color:#f0f6ff}
+      .hist-toolbar{background:#0f152a;border-color:#223}
+      .stat.compact{background:#101935;border-color:#223}
+      .hist-scroll table thead th{background:#0f152a}
+      .sheet{background:#0f152a}
     }
-  </style>
+  
+a, button, input, select, textarea {outline: none;}
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  box-shadow: var(--focus-ring);
+  border-color: var(--focus);
+}
+</style>
 </head>
 <body>
   <div class="app">
@@ -96,10 +170,11 @@
       <header>
         <div class="brand">
           <div class="logo" aria-label="Thunjai Express">
-            <a href="home.html" class="logo" aria-label="Thunjai Express">
+             <a href="home.html" class="logo" aria-label="Thunjai Express">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
       </svg>
+    </a>
           </div>
           <div>
             <div class="role-chip">Role: Rider</div>
@@ -178,10 +253,10 @@
         </div>
       </section>
 
-      <!-- TAB: Scan (Live) -->
+      <!-- TAB: Scan -->
       <section id="tab-scan" class="content">
         <div class="card" style="margin-bottom:12px">
-          <h3>สแกน / ประวัติ (เรียลไทม์)</h3>
+          <h3>สแกน / ประวัติ</h3>
           <div class="row">
             <button class="btn primary" onclick="openScan()">สแกนตอนรับ/ส่ง</button>
             <button class="btn ghost" onclick="clearScanLog()">ล้างประวัติ</button>
@@ -189,41 +264,58 @@
         </div>
         <table>
           <thead><tr><th>เวลา</th><th>เลข</th><th>เหตุการณ์</th></tr></thead>
-        <tbody id="scanLog"></tbody>
+          <tbody id="scanLog"></tbody>
         </table>
       </section>
 
-      <!-- TAB: History -->
+      <!-- TAB: History (ปรับตามที่ขอ) -->
       <section id="tab-history" class="content">
-        <div class="grid">
-          <div class="card">
-            <div class="row">
-              <h3>ประวัติการรับ/ส่งงาน</h3>
+        <div class="hist-layout">
+
+          <div class="hist-toolbar">
+            <div class="hist-bar">
               <div class="row" style="gap:8px">
+                <!-- ✅ เหลือแค่ช่องเลือกวันที่ -->
                 <input id="histDate" type="date" />
-                <button class="btn small ghost" onclick="setHistoryToday()">วันนี้</button>
-                <button class="btn small ghost" onclick="setHistoryYesterday()">เมื่อวาน</button>
+                <input id="histSearch" type="search" placeholder="ค้นหา: เลขพัสดุ / ชื่อ / เบอร์ / ที่อยู่"
+                       style="flex:1;min-width:180px;padding:9px 12px;border-radius:12px;border:1px solid var(--line)">
+                <div class="row">
+                  <button id="btnViewTimeline" class="btn small ghost" onclick="setHistView('timeline')">ลำดับเวลา</button>
+                  <button id="btnViewGroup"    class="btn small ghost" onclick="setHistView('group')">จับกลุ่ม</button>
+                </div>
               </div>
             </div>
 
-            <!-- ชิปส์ตัวกรองเหตุการณ์ -->
-            <div class="row" style="margin-top:10px">
-              <div id="histChips" class="chips" role="toolbar" aria-label="ตัวกรองเหตุการณ์ (History)">
-                <!-- เติมปุ่มจาก JS -->
-              </div>
+            <!-- ✅ ปุ่มตัวกรองเล็กลง -->
+            <div class="hist-row" style="margin-top:8px">
+              <div id="histChips" class="chips small" role="toolbar" aria-label="ตัวกรองเหตุการณ์ (History)"></div>
               <div class="pill">จำนวนเหตุการณ์: <b id="histCnt">0</b></div>
-            </div>
-
-            <div class="row" style="margin-top:8px">
-              <div class="muted">ช่วงวันที่: <b id="histDateLabel">—</b></div>
-              <div class="pill">COD รวมวันนั้น: <b id="histCOD">฿0</b></div>
             </div>
           </div>
 
-          <table>
-            <thead><tr><th>เวลา</th><th>เลขพัสดุ</th><th>ประเภท</th><th>เหตุการณ์</th><th>COD</th></tr></thead>
-            <tbody id="histTable"></tbody>
-          </table>
+          <div class="stat-cards compact">
+            <div class="stat compact"><div class="num" id="statAll">0</div><div class="lbl">เหตุการณ์รวม</div></div>
+            <div class="stat compact"><div class="num" id="statDelivered">0</div><div class="lbl">ส่งสำเร็จ</div></div>
+            <div class="stat compact"><div class="num" id="statCOD">฿0</div><div class="lbl">COD รวมวัน</div></div>
+          </div>
+
+          <div class="hist-scroll">
+            <div class="card hist-list">
+              <div class="row" style="margin-bottom:6px">
+                <h3 style="margin:0">รายการเหตุการณ์ <span class="muted" id="histDateLabel">—</span></h3>
+              </div>
+
+              <div id="histContainer">
+                <table id="histTableWrap" style="width:100%">
+                  <thead><tr><th>เวลา</th><th>เลขพัสดุ</th><th>ประเภท</th><th>เหตุการณ์</th><th>รายละเอียด</th><th>COD</th></tr></thead>
+                  <tbody id="histTable"></tbody>
+                </table>
+              </div>
+
+              <div id="histEmpty" class="empty" style="display:none">ไม่มีข้อมูลตามตัวกรองในวันนี้</div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -282,7 +374,7 @@
         <div class="tab"         data-tab="profile"  onclick="switchTab(this)">👤<span>โปรไฟล์</span></div>
       </nav>
 
-      <!-- Fullscreen Modal -->
+      <!-- Fullscreen Modal: Scanner/Camera -->
       <div id="scanModal" class="modal" aria-hidden="true">
         <div class="sheet">
           <header>
@@ -344,7 +436,7 @@
       { id:'TJX1006', type:'Pickup',   name:'คุณโบ',  phone:'080-333-2222', addr:'บางแคเหนือ',             note:'4 กล่อง',       cod:0,   status:'DONE' },
     ]
     let earn = 0
-    const statusBySeg = { Pickup:'ALL', Delivery:'ALL' } // จำ filter แยกแท็บ
+    const statusBySeg = { Pickup:'ALL', Delivery:'ALL' }
     const STATUSES = ['ALL','NEW','ACCEPTED','PICKED','DONE']
 
     // ===== History store =====
@@ -377,6 +469,7 @@
       })
     }
     function jobById(id){ return jobs.find(j=>j.id===id) }
+    function jobByIdOrPartial(id){ return jobs.find(j=>j.id===id) || {} }
 
     function jobCardHTML(j){
       const isDelivery = j.type==='Delivery'
@@ -431,7 +524,7 @@
     }
     function renderAll(){ renderSegment('Pickup'); renderSegment('Delivery'); }
 
-    // ===== Actions (with scanEvents log) =====
+    // ===== Actions (with history log) =====
     function acceptJob(id){
       const j = jobById(id); if(!j) return
       j.status = 'ACCEPTED'
@@ -446,7 +539,7 @@
     function updateJob(id, status){
       const j = jobById(id); if(!j) return
       j.status = status
-      renderAll(); logScan(j.id,status) // จะเป็น 'PICKED'
+      renderAll(); logScan(j.id,status) // 'PICKED'
     }
     function finishPickup(id){
       const j = jobById(id); if(!j) return
@@ -478,18 +571,14 @@
     // ===== Scan modal & log =====
     function openScan(){ document.getElementById('scanModal').classList.add('open'); document.getElementById('scanModal').setAttribute('aria-hidden','false') }
     function closeScan(){ document.getElementById('scanModal').classList.remove('open'); document.getElementById('scanModal').setAttribute('aria-hidden','true') }
-
     function logScan(no, evt){
       const tb = document.getElementById('scanLog')
       const t  = new Date()
       const tStr = t.toLocaleString(TH)
-      // Live table
       const tr = document.createElement('tr')
       tr.innerHTML = `<td>${tStr}</td><td>${no}</td><td>${evt}</td>`
       tb.prepend(tr)
-      // Store for history
       scanEvents.push({ time: t, id: no, event: evt })
-      // If history tab open, refresh it
       if(document.getElementById('tab-history').classList.contains('active')) renderHistory()
     }
     function mockScan(){
@@ -516,124 +605,190 @@
       toast('ส่งยอด COD เข้า Hub แล้ว '+t)
     }
 
-    // ===== History: Event filter chips =====
+    // ===== History state & helpers =====
     const histEventOptions = [
-      'ALL',
-      'DELIVERED',
-      'PICKED',
-      'ACCEPT JOB',
-      'REJECT JOB',
-      'PICKUP DONE',
-      'DELIVERY FAILED',
-      'SCAN',
+      'ALL','DELIVERED','PICKED','ACCEPT JOB','REJECT JOB','PICKUP DONE','DELIVERY FAILED','SCAN'
     ]
     let histEventFilter = 'ALL'
+    let histViewMode = 'timeline' // 'timeline' | 'group'
+    let histSearchQuery = ''
 
-    function setHistEventFilter(name){
-      if(!histEventOptions.includes(name)) name = 'ALL'
-      histEventFilter = name
-      ;[...document.querySelectorAll('#histChips .chip')].forEach(ch=>{
-        ch.setAttribute('aria-pressed', ch.dataset.name===name ? 'true' : 'false')
-      })
-      renderHistory()
+    function yyyy_mm_dd(d){
+      const y = d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0')
+      return `${y}-${m}-${day}`
+    }
+    function parseDateInput(v){ return new Date(v+'T00:00') }
+    function eventClass(name){
+      const k = String(name).toUpperCase().replace(/\s+/g,'')
+      return ['ev', k].join(' ')
     }
 
-    function countEventsForDate(yyyy_mm_dd_str){
-      const res = {}
-      let all = 0
+    function countEventsForDate(ymd){
+      const res = {}; let all=0, delivered=0, cod=0
       scanEvents.forEach(e=>{
-        if(yyyy_mm_dd(e.time) !== yyyy_mm_dd_str) return
+        if(yyyy_mm_dd(e.time)!==ymd) return
         all++
-        res[e.event] = (res[e.event]||0) + 1
+        res[e.event] = (res[e.event]||0)+1
+        const j = jobByIdOrPartial(e.id)
+        const isDelivery = (j.type==='Delivery')
+        if(e.event==='DELIVERED' && isDelivery){
+          delivered++
+          cod += (j.cod||0)
+        }
       })
-      res.__ALL__ = all
+      res.__ALL__ = all; res.__DELIVERED__ = delivered; res.__COD__ = cod
       histEventOptions.forEach(k=>{ if(!(k in res) && k!=='ALL') res[k]=0 })
       return res
     }
 
     function renderHistChips(){
+      const ymd = document.getElementById('histDate').value
+      const counts = countEventsForDate(ymd)
       const wrap = document.getElementById('histChips')
-      const selDate = document.getElementById('histDate').value
-      const counts = countEventsForDate(selDate)
       wrap.innerHTML = histEventOptions.map(name=>{
-        const n = counts[name] ?? (name==='ALL' ? (counts.__ALL__||0) : 0)
+        const n = name==='ALL' ? (counts.__ALL__||0) : (counts[name]||0)
         return `<button class="chip" data-name="${name}" aria-pressed="${histEventFilter===name?'true':'false'}"
-                  onclick="setHistEventFilter('${name.replace(/'/g, "\\'")}')">${name} (${n})</button>`
+                  onclick="setHistEventFilter('${name.replace(/'/g,"\\'")}')">${name} (${n})</button>`
       }).join('')
+      document.getElementById('statAll').textContent = counts.__ALL__||0
+      document.getElementById('statDelivered').textContent = counts.__DELIVERED__||0
+      document.getElementById('statCOD').textContent = '฿'+ (counts.__COD__||0).toLocaleString(TH)
     }
 
-    // ===== History tab core =====
-    function yyyy_mm_dd(d){
-      const y = d.getFullYear()
-      const m = String(d.getMonth()+1).padStart(2,'0')
-      const day = String(d.getDate()).padStart(2,'0')
-      return `${y}-${m}-${day}`
-    }
-    function setHistoryToday(){
-      const inp = document.getElementById('histDate')
-      inp.value = yyyy_mm_dd(new Date())
-      histEventFilter = 'ALL'
+    // ===== History interactions =====
+    function setHistEventFilter(name){
+      if(!histEventOptions.includes(name)) name='ALL'
+      histEventFilter = name
       renderHistory()
     }
-    function setHistoryYesterday(){
-      const inp = document.getElementById('histDate')
-      const d = new Date(); d.setDate(d.getDate()-1)
-      inp.value = yyyy_mm_dd(d)
-      histEventFilter = 'ALL'
+    function setHistView(mode){
+      histViewMode = mode==='group' ? 'group' : 'timeline'
+      document.getElementById('btnViewTimeline').className = 'btn small ' + (histViewMode==='timeline'?'primary':'ghost')
+      document.getElementById('btnViewGroup').className    = 'btn small ' + (histViewMode==='group'?'primary':'ghost')
       renderHistory()
     }
 
+    // ===== History render core =====
     function renderHistory(){
       const inp = document.getElementById('histDate')
-      const sel = inp.value
-      if(!sel) return
+      const sel = inp.value; if(!sel) return
 
-      // chips first (depends on date)
       renderHistChips()
 
-      const tbody = document.getElementById('histTable')
-      const rowsAll = scanEvents
-        .filter(e => yyyy_mm_dd(e.time) === sel)
-        .sort((a,b)=> b.time - a.time)
+      let rowsAll = scanEvents.filter(e => yyyy_mm_dd(e.time)===sel)
+                              .sort((a,b)=> b.time - a.time)
 
-      const rows = histEventFilter==='ALL' ? rowsAll : rowsAll.filter(e=> e.event === histEventFilter)
+      const q = (histSearchQuery||'').trim().toLowerCase()
+      if(q){
+        rowsAll = rowsAll.filter(e=>{
+          const j = jobByIdOrPartial(e.id)
+          return [e.id, j.name, j.phone, j.addr].some(v => (v||'').toLowerCase().includes(q))
+        })
+      }
+
+      const rows = histEventFilter==='ALL' ? rowsAll : rowsAll.filter(e=> e.event===histEventFilter)
 
       document.getElementById('histDateLabel').textContent =
         new Date(sel+'T00:00').toLocaleDateString(TH, {year:'numeric',month:'short',day:'numeric'})
       document.getElementById('histCnt').textContent = rows.length
+      const empty = document.getElementById('histEmpty')
+      const tableWrap = document.getElementById('histTableWrap')
+      empty.style.display = rows.length ? 'none' : 'block'
+      tableWrap.style.display = (rows.length && histViewMode==='timeline') ? '' : (histViewMode==='timeline'?'none':'')
 
-      tbody.innerHTML = rows.map(e=>{
-        const j = jobById(e.id) || {}
-        const isDelivery = (j.type==='Delivery')
-        const cod = (e.event==='DELIVERED' && isDelivery) ? (j.cod||0) : 0
-        return `<tr>
-          <td>${e.time.toLocaleTimeString(TH, {hour:'2-digit', minute:'2-digit'})}</td>
-          <td>${e.id}</td>
-          <td>${j.type||'-'}</td>
-          <td>${e.event}</td>
-          <td>${cod? '฿'+cod.toLocaleString(TH): '-'}</td>
-        </tr>`
-      }).join('')
+      if(histViewMode==='timeline'){
+        const tbody = document.getElementById('histTable')
+        tbody.innerHTML = rows.map(e=>{
+          const j = jobByIdOrPartial(e.id)
+          const isDelivery = (j.type==='Delivery')
+          const cod = (e.event==='DELIVERED' && isDelivery) ? (j.cod||0) : 0
+          const lines = [
+            j.note ? `โน้ต: ${j.note}` : '',
+            j.addr ? `ที่อยู่: ${j.addr}` : ''
+          ].filter(Boolean).join('<br>')
+          return `<tr>
+            <td>${e.time.toLocaleTimeString(TH,{hour:'2-digit',minute:'2-digit'})}</td>
+            <td>${e.id}</td>
+            <td>${j.type||'-'}</td>
+            <td><span class="${eventClass(e.event)}">${e.event}</span></td>
+            <td class="muted">${lines||'-'}</td>
+            <td>${cod? '฿'+cod.toLocaleString(TH): '-'}</td>
+          </tr>`
+        }).join('')
+      } else {
+        const container = document.getElementById('histContainer')
+        const groups = {}
+        rows.forEach(e => { (groups[e.event] ||= []).push(e) })
+        const ordered = histEventOptions.filter(s=>s!=='ALL').filter(s=>groups[s]?.length).concat(
+          Object.keys(groups).filter(k=>!histEventOptions.includes(k))
+        )
+        container.innerHTML = ordered.length ? ordered.map(evt=>{
+          const items = groups[evt].sort((a,b)=>b.time-a.time).map(e=>{
+            const j = jobByIdOrPartial(e.id)
+            const isDelivery = (j.type==='Delivery')
+            const cod = (e.event==='DELIVERED' && isDelivery) ? (j.cod||0) : 0
+            return `<div class="row" style="padding:8px 0;border-bottom:1px dashed var(--line)">
+              <div style="min-width:72px">${e.time.toLocaleTimeString(TH,{hour:'2-digit',minute:'2-digit'})}</div>
+              <div style="flex:1">
+                <div><b>${e.id}</b> • <span class="muted">${j.type||'-'}</span></div>
+                <div class="muted" style="font-size:.82rem">${j.addr||''}</div>
+              </div>
+              <div>${cod? '฿'+cod.toLocaleString(TH): ''}</div>
+            </div>`
+          }).join('')
+          return `
+            <div class="card" style="margin-top:10px">
+              <div class="row"><h4 style="margin:0"><span class="${eventClass(evt)}">${evt}</span></h4><span class="pill">${groups[evt].length} รายการ</span></div>
+              <div style="margin-top:6px">${items}</div>
+            </div>`
+        }).join('') : '<div class="empty">ไม่มีข้อมูลตามตัวกรองในวันนี้</div>'
+        document.getElementById('histTable').innerHTML = ''
+      }
 
-      const codSum = rowsAll.reduce((sum,e)=>{
-        const j = jobById(e.id)
-        const isDelivery = j && j.type==='Delivery'
-        if(e.event==='DELIVERED' && isDelivery) return sum + (j.cod||0)
-        return sum
-      },0)
-      document.getElementById('histCOD').textContent = '฿'+ codSum.toLocaleString(TH)
+      const counts = countEventsForDate(sel)
+      document.getElementById('statAll').textContent = counts.__ALL__||0
+      document.getElementById('statDelivered').textContent = counts.__DELIVERED__||0
+      document.getElementById('statCOD').textContent = '฿'+ (counts.__COD__||0).toLocaleString(TH)
+    }
+
+    // ===== History bindings =====
+    function bindHistoryUI(){
+      const inp = document.getElementById('histDate')
+      inp.value = yyyy_mm_dd(new Date())
+      inp.addEventListener('change', ()=>{ renderHistory() })
+
+      const search = document.getElementById('histSearch')
+      let t=null
+      search.addEventListener('input', e=>{
+        clearTimeout(t)
+        t = setTimeout(()=>{
+          histSearchQuery = e.target.value||''
+          renderHistory()
+        }, 180)
+      })
+
+      setHistView('timeline')
+      renderHistory()
+    }
+
+    // ===== Sorting demo =====
+    function sortJobs(seg){
+      if(!seg){
+        jobs.sort((a,b)=> (a.type==='Delivery') - (b.type==='Delivery'))
+      }else{
+        const order = {NEW:1, ACCEPTED:2, PICKED:3, DONE:4}
+        jobs.sort((a,b)=>{
+          if(a.type!==seg || b.type!==seg) return 0
+          return (order[a.status]||9) - (order[b.status]||9)
+        })
+      }
+      renderAll()
+      toast('จัดลำดับ (ตัวอย่าง)')
     }
 
     // ===== Init =====
     renderAll()
-    // History defaults to today
-    const histInput = document.getElementById('histDate')
-    histInput.value = yyyy_mm_dd(new Date())
-    histInput.addEventListener('change', ()=>{
-      histEventFilter = 'ALL'
-      renderHistory()
-    })
-    renderHistory()
+    bindHistoryUI()
   </script>
 </body>
 </html>
