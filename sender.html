@@ -113,14 +113,15 @@
   padding:8px 4px;
   transition:background .2s, color .2s;
   border-radius:10px;       
+  background:#f9fafb;       /* พื้นหลังอ่อนลง */
 }
 .tab:hover{
-  background:#f3f4f6;       
+  background:#e5e7eb;       /* hover เทาเข้มกว่า */
 }
 .tab.active{
-  color:var(--brand-blue);
+  background:var(--brand-blue);  /* สีเข้มขึ้นเมื่อ active */
+  color:#ffffff;                 /* ตัวอักษรเป็นสีขาว */
   font-weight:700;
-  background:#e0ebff;       
 }
     .tab:focus-visible{outline:none;box-shadow:var(--focus-ring)}
 
