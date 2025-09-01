@@ -39,13 +39,12 @@
 <body>
   <header>
     <!-- Inline SVG logo (sample lightning bolt) -->
-    <a href="home.html" class="logo" aria-label="Thunjai Express">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
-      </svg>
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="var(--brand-blue)"/>
+    </svg>
     <h1>Thunjai Express</h1>
     <p>เลือกบทบาทเพื่อเข้าสู่ระบบ</p>
-    <p class="hint">ระบบจะจำบทบาทในเบราว์เซอร์: <code>localStorage('thx_role')</code></p>
+
   </header>
 
   <main class="roles">
@@ -79,15 +78,15 @@
     }
 
     // แสดงบทบาทที่เคยเลือกไว้ (ถ้ามี)
-    (function init(){
-      const r = localStorage.getItem('thx_role');
-      if(r){
-        const p = document.createElement('p');
-        p.className = 'hint';
-        p.textContent = 'บทบาทปัจจุบัน: ' + (r==='CS' ? 'Customer Service' : r);
-        document.querySelector('header').appendChild(p);
-      }
-    })();
+    //(function init(){
+    //  const r = localStorage.getItem('thx_role');
+   //   if(r){
+    //    const p = document.createElement('p');
+    //    p.className = 'hint';
+    //    p.textContent = 'บทบาทปัจจุบัน: ' + (r==='CS' ? 'Customer Service' : r);
+    //    document.querySelector('header').appendChild(p);
+    //  }
+    //})();
   </script>
 </body>
 </html>
