@@ -6,39 +6,14 @@
   <meta name="theme-color" content="#0a2f8f" />
   <title>Thunjai Express — Rider</title>
   <style>
-    /* ===== Readability-first palette ===== */
     :root{
-      --brand:#ffd54d; 
-      --brand-blue:#0a2f8f; 
-      --brand-soft:#fff6cc;
-
-      --ink:#0b1726;                 
-      --bg:#ffffff;                  
-      --muted:#475569;               
-      --line:#d5dbe3;                
-
-      --chip-bg:#f3f4f6;
-      --chip-line:#d7dde6;
-      --chip-on-bg:#dbeafe;          
-      --chip-on-line:#bfd7ff;
-
+      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
+      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
       --radius:18px; --hdr:56px; --bnv:64px; --maxw:480px;
-
-      --focus:#94a3b8; 
-      --focus-ring: 0 0 0 3px rgba(148,163,184,.35);
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;
-      background:var(--bg);
-      color:var(--ink);
-      line-height:1.45;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
 
     .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
     .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
@@ -47,12 +22,11 @@
     .brand{display:flex;gap:10px;align-items:center}
     .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
     .logo svg{width:20px;height:20px;color:#0a2f8f}
-    .brand h1{font-size:1.06rem;margin:0;color:#0a2f8f}
-    .role-chip{font-size:.74rem;background:#fff3b0;padding:.25rem .55rem;border-radius:999px;color:#6b5a00;border:1px solid #f0d55e}
+    .brand h1{font-size:1.05rem;margin:0;color:#0a2f8f}
+    .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
     .hdr-actions{display:flex;gap:8px}
     .iconbtn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;place-items:center;cursor:pointer}
     .iconbtn:active{transform:scale(.98)}
-    .iconbtn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
 
     .content{flex:1;overflow:auto;padding:16px;display:none}
     .content.active{display:block}
@@ -60,105 +34,73 @@
     .grid{display:grid;gap:12px}
     .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
     .row{display:flex;gap:10px;align-items:center;justify-content:space-between;min-width:0}
-    .pill{font-size:.78rem;background:#f8fafc;border:1px solid var(--line);padding:.25rem .6rem;border-radius:999px;color:#0b1726}
-    .big{font-size:1.42rem;font-weight:800}
-    .muted{color:var(--muted);font-size:.88rem}
+    .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
+    .big{font-size:1.4rem;font-weight:800}
+    .muted{color:var(--muted);font-size:.85rem}
 
     /* Chips */
     .chips{display:flex;gap:8px;overflow:auto hidden;white-space:nowrap;flex:1 1 auto;padding-bottom:4px;scrollbar-width:none}
     .chips::-webkit-scrollbar{display:none}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:7px 11px;border-radius:999px;background:var(--chip-bg);
-      border:1px solid var(--chip-line);font-size:.82rem;font-weight:650;color:#1f2937;cursor:pointer;flex:0 0 auto
-    }
-    .chip[aria-pressed="true"]{background:var(--chip-on-bg);border-color:var(--chip-on-line);color:#0a2f8f}
-    .chip:focus-visible{outline:none;box-shadow:var(--focus-ring)}
-    .chips.small .chip{padding:5px 9px;font-size:.74rem}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#f8fafc;border:1px solid var(--line);font-size:.8rem;font-weight:600;color:#334155;cursor:pointer;flex:0 0 auto}
+    .chip[aria-pressed="true"]{background:#e8f0ff;border-color:#cfe0ff;color:#0a2f8f}
+    /* ✅ เวอร์ชันเล็กใช้ในหน้า History เท่านั้น */
+    .chips.small .chip{padding:4px 8px;font-size:.7rem}
 
     /* Job cards */
     .job{display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px}
     .job .meta{display:flex;gap:6px;flex-wrap:wrap}
-    .job .meta .tag{font-size:.74rem;background:#eef2ff;border:1px solid #d7e0ff;color:#1f2a44;padding:.18rem .5rem;border-radius:999px}
-    .job .addr{font-size:.9rem}
+    .job .meta .tag{font-size:.7rem;background:#eef2ff;border:1px solid #dbe2ff;color:#223;padding:.15rem .45rem;border-radius:999px}
+    .job .addr{font-size:.85rem}
     .job .act{display:flex;gap:6px;flex-wrap:wrap}
-    .btn{appearance:none;border:none;border-radius:10px;padding:9px 11px;font-weight:750;font-size:.86rem;cursor:pointer}
+    .btn{appearance:none;border:none;border-radius:10px;padding:8px 10px;font-weight:700;font-size:.85rem;cursor:pointer}
     .btn.primary{background:var(--brand-blue);color:#fff}
-    .btn.warn{background:#fef2f2;color:#7f1d1d;border:1px solid #f9caca}
-    .btn.ghost{background:#fff;border:1px solid #cbd5e1;color:#0a2f8f}
-    .btn.small{padding:7px 9px;font-weight:650;font-size:.8rem}
-    .btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
-    .btn:active{transform:translateY(1px)}
+    .btn.warn{background:#ffeee8;color:#b42318;border:1px solid #ffd2c4}
+    .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
+    .btn.small{padding:6px 8px;font-weight:600;font-size:.8rem}
 
     /* Table */
     table{width:100%;border-collapse:separate;border-spacing:0 6px}
-    th{font-size:.78rem;text-align:left;color:#1f2a37;font-weight:700}
-    td{background:#fff;border:1px solid var(--line);padding:7px 9px;border-radius:8px;font-size:.82rem}
+    th{font-size:.75rem;text-align:left;color:#334155;font-weight:600}
+    td{background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;font-size:.8rem}
 
     /* Bottom nav */
     nav.bnv{
       height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
       display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr))
     }
-    .tab{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  color:#1f2937;           
-  font-size:.8rem;          
-  font-weight:600;
-  cursor:pointer;
-  padding:8px 4px;
-  transition:background .2s, color .2s;
-  background:#f9fafb;       /* พื้นหลังอ่อนลง */
-}
-.tab:hover{
-  background:#e5e7eb;       /* hover เทาเข้มกว่า */
-}
-.tab.active{
-  background:var(--brand-blue);  /* สีเข้มขึ้นเมื่อ active */
-  color:#ffffff;                 /* ตัวอักษรเป็นสีขาว */
-  font-weight:700;
-}
-    .tab:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.7rem;cursor:pointer;padding:6px}
+    .tab.active{color:var(--brand-blue);font-weight:700}
 
-    .fab{
-      position:fixed;inset:auto calc(50% - 40px) 82px auto;width:80px;height:40px;border-radius:999px;
-      background:var(--brand);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800;
-      color:#0b1726;border:1px solid #f2c93b;cursor:pointer;font-size:.86rem
-    }
+    .fab{position:fixed;inset:auto calc(50% - 40px) 82px auto;width:80px;height:40px;border-radius:999px;background:var(--brand);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;color:#0b2b27;border:1px solid #f2c93b;cursor:pointer;font-size:.85rem}
     .fab:active{transform:translateY(1px)}
-    .fab:focus-visible{outline:none;box-shadow:var(--focus-ring)}
 
-    /* Event badges */
-    .ev{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:800;border:1px solid transparent}
+    /* Event badges for history */
+    .ev{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:700;border:1px solid transparent}
     .ev.DELIVERED{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
     .ev.PICKED{background:#eff6ff;color:#1e40af;border-color:#c7d2fe}
     .ev.ACCEPTJOB{background:#f0f9ff;color:#075985;border-color:#bae6fd}
     .ev.REJECTJOB{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
     .ev.PICKUPDONE{background:#f5f3ff;color:#5b21b6;border-color:#ddd6fe}
     .ev.DELIVERYFAILED{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-    .ev.SCAN{background:#f1f5f9;color:#1f2937;border-color:#e2e8f0}
+    .ev.SCAN{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
 
-    /* History */
+    /* History fit-to-screen */
     #tab-history { padding: 6px 12px 12px; }
     .hist-layout{height:calc(100dvh - var(--hdr) - var(--bnv));display:flex;flex-direction:column;gap:6px;}
     .hist-toolbar{position:sticky;top:0;z-index:3;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;}
     .hist-bar,.hist-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
     .stat-cards.compact{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
     .stat.compact{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:6px;text-align:center}
-    .stat.compact .num{font-weight:900;font-size:1rem}
-    .stat.compact .lbl{font-size:.72rem;color:#64748b}
+    .stat.compact .num{font-weight:800;font-size:.95rem}
+    .stat.compact .lbl{font-size:.7rem;color:#64748b}
     .hist-scroll{flex:1;min-height:0;overflow:auto;display:block}
     .card.hist-list{margin:0;padding:10px}
     .hist-scroll table thead th{position:sticky;top:0;z-index:1;background:#fff}
-    #histTable td,#histTable th{padding:7px 9px;font-size:.78rem}
-    #histTable td.muted{font-size:.76rem;color:var(--muted)}
+    #histTable td,#histTable th{padding:6px 8px;font-size:.78rem}
+    #histTable td.muted{font-size:.75rem;color:#64748b}
     .empty{padding:16px;border:1px dashed var(--line);border-radius:10px;text-align:center;color:#64748b}
 
-    /* Modal */
+    /* Modal (Fullscreen) */
     .modal{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;padding:20px}
     .modal.open{display:flex}
     .sheet{width:100%;max-width:var(--maxw);height:92dvh;background:#fff;border-radius:20px;display:flex;flex-direction:column;overflow:hidden}
@@ -168,25 +110,19 @@
 
     /* Dark mode */
     @media (prefers-color-scheme: dark){
-      body{background:#0b1120;color:#e7edf6}
-      .phone{background:#0f162a}
-      header,.card,input,textarea,select,td{background:#0f162a;color:#e7edf6;border-color:#243044}
-      nav.bnv{background:#0f162a;border-color:#243044}
-      .iconbtn{background:#0f162a;border-color:#243044}
+      body{background:#0b1020;color:#e5e7eb}
+      .phone{background:#0f152a}
+      header,.card,input,textarea,select,td{background:#0f152a;color:#e5e7eb;border-color:#223}
+      nav.bnv{background:#0f152a;border-color:#223}
+      .iconbtn{background:#0f152a;border-color:#223}
       .fab{border-color:#d4b534}
-      .job{border-color:#243044}
-      .chip{background:#172033;border-color:#2a3650;color:#d9e1ee}
-      .chip[aria-pressed="true"]{background:#1e3a6d;border-color:#2c4f94;color:#f0f6ff}
-      .hist-toolbar{background:#0f162a;border-color:#243044}
-      .stat.compact{background:#101935;border-color:#243044}
-      .hist-scroll table thead th{background:#0f162a}
-      .sheet{background:#0f162a}
-    }
-
-    a, button, input, select, textarea {outline: none;}
-    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
-      box-shadow: var(--focus-ring);
-      border-color: var(--focus);
+      .job{border-color:#223}
+      .chip{background:#1b2035;border-color:#2a2f46;color:#cbd5e1}
+      .chip[aria-pressed="true"]{background:#2b3a5a;border-color:#3c4b6c;color:#f0f6ff}
+      .hist-toolbar{background:#0f152a;border-color:#223}
+      .stat.compact{background:#101935;border-color:#223}
+      .hist-scroll table thead th{background:#0f152a}
+      .sheet{background:#0f152a}
     }
   </style>
 </head>
