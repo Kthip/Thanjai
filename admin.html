@@ -7,12 +7,15 @@
   <title>Thunjai Express — Admin</title>
   <style>
     :root{
-      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
-      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
-      --radius:18px; --hdr:56px; --bnv:64px; --maxw:520px;
-    }
+  --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
+  /* Readability-first */
+  --ink:#0b1726; --bg:#ffffff; --muted:#475569; --line:#d5dbe3;
+  --radius:18px; --hdr:56px; --bnv:64px; --maxw:520px;
+  --focus:#94a3b8;
+  --focus-ring: 0 0 0 3px rgba(148,163,184,.35);
+}
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
     .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
     .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
@@ -32,7 +35,7 @@
     .card h3{margin:.2rem 0 .4rem 0;font-size:.96rem;color:#0a2f8f}
     .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
     .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
-    .muted{color:var(--muted);font-size:.85rem}
+    .muted{color:var(--muted);font-size:.88rem}
     .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
     .btn.primary{background:var(--brand-blue);color:#fff}
     .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
@@ -41,16 +44,50 @@
     th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
     td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
     nav.bnv{height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
-    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
-    .tab.active{color:var(--brand-blue);font-weight:700}
+    .tab{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  color:#1f2937;
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+  padding:8px 4px;
+  transition:background .2s, color .2s;
+  background:#f9fafb; /* พื้นหลังอ่อน */
+}
+.tab:hover{
+  background:#e5e7eb; /* hover เทาเข้มกว่า */
+}
+.tab.active{
+  background:var(--brand-blue);
+  color:#ffffff;
+  font-weight:700;
+}
     @media (prefers-color-scheme: dark){
-      body{background:#0b1020;color:#e5e7eb}
+      body{background:#0b1020;color:#e5e7eb
+
+      /* Bottom tabs - Dark Mode */
+      .tab{background:#172033;color:#e5eaf3;}
+      .tab:hover{background:#20324e;}
+      .tab.active{background:var(--brand-blue);color:#ffffff;font-weight:700;}
+}
       .phone{background:#0f152a}
       header,.card,td{background:#0f152a;color:#e5e7eb;border-color:#223}
       nav.bnv{background:#0f152a;border-color:#223}
       .iconbtn{background:#0f152a;border-color:#223}
     }
-  </style>
+  
+
+a, button, input, select, textarea {outline:none;}
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  box-shadow: var(--focus-ring);
+  border-color: var(--focus);
+}
+
+</style>
 </head>
 <body>
   <div class="app">
