@@ -48,6 +48,7 @@
   </header>
 
   <main class="roles">
+    <button class="role-btn" onclick="selectRole('auth')">Login / Register</button>
     <button class="role-btn" onclick="selectRole('sender')">Sender (ผู้ส่ง)</button>
     <button class="role-btn" onclick="selectRole('rider')">Rider (ไรเดอร์)</button>
     <button class="role-btn" onclick="selectRole('hub')">Hub (คลัง)</button>
@@ -62,13 +63,14 @@
   <script>
     // เส้นทางไฟล์แบบ slug สั้น ๆ
     const ROUTES = {
+      auth: 'auth.html',
       sender: 'sender.html',
       rider: 'rider.html',
       hub: 'hub.html',
       admin: 'admin.html',
       cs: 'cs.html'
     };
-    const ROLE_MAP = { sender: 'Sender', rider: 'Rider', hub: 'Hub', admin: 'Admin', cs: 'CS' };
+    const ROLE_MAP = { auth: 'auth', sender: 'Sender', rider: 'Rider', hub: 'Hub', admin: 'Admin', cs: 'CS' };
 
     function selectRole(role){
       const mapped = ROLE_MAP[role] || 'Guest';
