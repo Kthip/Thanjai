@@ -4,53 +4,135 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0a2f8f" />
-  <title>Thunjai Express — Admin</title>
+  <title>Thunjai Express — Sender</title>
   <style>
     :root{
-      --brand:#ffd54d; --brand-blue:#0a2f8f; --brand-soft:#fff6cc;
-      --ink:#0b2b27; --bg:#f6f8fb; --muted:#64748b; --line:#e5e7eb;
-      --radius:18px; --hdr:56px; --bnv:64px; --maxw:520px;
-    }
+  --brand:#ffd54d;
+  --brand-blue:#0a2f8f;
+  --brand-soft:#fff6cc;
+
+  /* Readability-first */
+  --ink:#0b1726;
+  --bg:#ffffff;
+  --muted:#475569;
+  --line:#d5dbe3;
+
+  --radius:18px;
+  --hdr:56px; --bnv:64px; --maxw:480px;
+
+  --focus:#94a3b8;
+  --focus-ring: 0 0 0 3px rgba(148,163,184,.35);
+}
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
-    .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#0a2f8f 0%,#0a2f8f 180px,var(--bg) 180px)}
-    .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
-    header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+    /* Edge-to-edge mobile frame */
+    .app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg, #0a2f8f 0%, #0a2f8f 180px, var(--bg) 180px)}
+    .phone{width:100%;max-width:var(--maxw);min-height:100dvh;background:#fff;border-radius:0;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(10,47,143,.08)}
+    header{
+      height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)
+    }
     .brand{display:flex;gap:10px;align-items:center}
     .logo{inline-size:34px;block-size:34px;border-radius:10px;background:var(--brand);display:grid;place-items:center}
     .logo svg{width:20px;height:20px;color:var(--brand-blue)}
     .brand h1{font-size:1.05rem;margin:0;color:var(--brand-blue)}
     .role-chip{font-size:.72rem;background:var(--brand-soft);padding:.2rem .5rem;border-radius:999px;color:#7a6400;border:1px solid #f6d971}
-    .hdr-actions{display:flex;gap:8px}
+    .hdr-actions{display:flex;gap:10px}
     .iconbtn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;place-items:center;cursor:pointer}
+    .iconbtn:active{transform:scale(.98)}
+
+    main{flex:1;display:flex;flex-direction:column}
     .content{flex:1;overflow:auto;padding:16px;display:none}
     .content.active{display:block}
+
+    /* Cards */
     .grid{display:grid;gap:12px}
     .grid.cols-2{grid-template-columns:1fr 1fr}
     .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
     .card h3{margin:.2rem 0 .4rem 0;font-size:.96rem;color:#0a2f8f}
-    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
-    .pill{font-size:.75rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
-    .muted{color:var(--muted);font-size:.85rem}
-    .btn{appearance:none;border:none;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+    .stat{display:flex;align-items:center;gap:12px}
+    .stat .pill{font-size:.8rem;background:#f8fafc;border:1px solid var(--line);padding:.2rem .5rem;border-radius:999px;color:#0b2b27}
+    .big{font-size:1.6rem;font-weight:700}
+
+    /* Forms */
+    form{display:grid;gap:10px}
+    label{font-size:.85rem;color:#0f172a}
+    input, textarea, select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}
+    textarea{min-height:84px}
+    .row{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+    .hint{font-size:.78rem;color:var(--muted)}
+    .error{font-size:.78rem;color:#b42318}
+    .actions{display:flex;gap:10px}
+    .btn{appearance:none;border:none;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}
     .btn.primary{background:var(--brand-blue);color:#fff}
     .btn.ghost{background:#fff;border:1px solid var(--line);color:#0a2f8f}
-    .btn.warn{background:#ffeee8;color:#b42318;border:1px solid #ffd2c4}
+
+    /* Table-ish */
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
     th{font-size:.8rem;text-align:left;color:#334155;font-weight:600}
     td{background:#fff;border:1px solid var(--line);padding:10px;border-radius:12px}
+
+    /* Bottom Nav */
     nav.bnv{height:var(--bnv);position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
-    .tab{display:grid;place-items:center;gap:4px;color:#334155;font-size:.75rem;cursor:pointer;padding:8px}
-    .tab.active{color:var(--brand-blue);font-weight:700}
+    .tab{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:#1f2937;
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+  padding:8px 4px;
+  transition:background .2s, color .2s;
+  background:#f9fafb; /* พื้นหลังอ่อน */
+}
+.tab:hover{
+  background:#e5e7eb; /* hover เทาเข้มกว่า */
+}
+.tab.active{
+  background:var(--brand-blue);
+  color:#ffffff;
+  font-weight:700;
+}
+
+    /* FAB */
+    .fab{position:fixed;inset:auto calc(50% - 40px) 82px auto;width:80px;height:44px;border-radius:999px;background:var(--brand);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#0b2b27;border:1px solid #f2c93b;cursor:pointer}
+    .fab:active{transform:translateY(1px)}
+
+    /* Modal (Fullscreen) */
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.58);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .sheet{width:100%;max-width:var(--maxw);height:92dvh;background:#fff;border-radius:20px;display:flex;flex-direction:column;overflow:hidden}
+    .sheet header{position:relative}
+    .sheet header h2{font-size:1rem;color:#0a2f8f}
+    .sheet .body{flex:1;padding:16px;overflow:auto}
+
+    /* Dark mode */
     @media (prefers-color-scheme: dark){
-      body{background:#0b1020;color:#e5e7eb}
+      body{background:#0b1020;color:#e5e7eb
+
+      /* Bottom tabs - Dark Mode */
+      .tab{background:#172033;color:#e5eaf3;}
+      .tab:hover{background:#20324e;}
+      .tab.active{background:var(--brand-blue);color:#ffffff;font-weight:700;}
+}
       .phone{background:#0f152a}
-      header,.card,td{background:#0f152a;color:#e5e7eb;border-color:#223}
+      header, .card, input, textarea, select, td{background:#0f152a;color:#e5e7eb;border-color:#223}
       nav.bnv{background:#0f152a;border-color:#223}
       .iconbtn{background:#0f152a;border-color:#223}
+      .fab{border-color:#d4b534}
     }
-  </style>
+  
+
+a, button, input, select, textarea {outline:none;}
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  box-shadow: var(--focus-ring);
+  border-color: var(--focus);
+}
+
+</style>
 </head>
 <body>
   <div class="app">
@@ -58,115 +140,314 @@
       <header>
         <div class="brand">
           <div class="logo" aria-label="Thunjai Express">
-		  <a href="home.html" class="logo" aria-label="Thunjai Express">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
-      </svg>
-    </a>
-		  </div>
+            <!-- lightning icon -->
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          </div>
           <div>
-            <div class="role-chip">Role: Admin</div>
+            <div class="role-chip">Role: Sender</div>
             <h1>Thunjai Express</h1>
           </div>
         </div>
         <div class="hdr-actions">
-          <button class="iconbtn" onclick="toast('ยังไม่มีแจ้งเตือนใหม่')">🔔</button>
+          <button class="iconbtn" title="แจ้งเตือน" onclick="toast('ยังไม่มีแจ้งเตือนใหม่')">🔔</button>
+          <button class="iconbtn" title="สแกน" onclick="openScan()">📷</button>
         </div>
       </header>
 
-      <!-- Dashboard / KPIs -->
-      <section id="tab-kpi" class="content active">
+      <!-- Dashboard -->
+      <section id="tab-dashboard" class="content active">
         <div class="grid cols-2">
-          <div class="card"><h3>ออเดอร์วันนี้</h3><div class="row"><div class="pill">ทั้งหมด</div><b id="kpiOrders">128</b></div></div>
-          <div class="card"><h3>อัตราส่งสำเร็จ</h3><div class="row"><div class="pill">D+1</div><b id="kpiSuccess">96.2%</b></div></div>
-          <div class="card"><h3>งานค้าง Hub</h3><div class="row"><div class="pill">ก่อน 18:00</div><b id="kpiBacklog">23</b></div></div>
-          <div class="card"><h3>เคสข้อยกเว้น</h3><div class="row"><div class="pill">เปิดใหม่</div><b id="kpiExc">7</b></div></div>
-          <div class="card"><h3>ยอด COD รออนุมัติ</h3><div class="row"><div class="pill">ถอนเงิน</div><b id="kpiCOD">฿42,300</b></div></div>
-          <div class="card"><h3>คิวติดต่อ CS</h3><div class="row"><div class="pill">รอ 30 นาที+</div><b id="kpiCS">12</b></div></div>
+          <div class="card">
+            <h3>ออเดอร์วันนี้</h3>
+            <div class="stat"><div class="big" id="statOrders">12</div><span class="pill">รายการ</span></div>
+          </div>
+          <div class="card">
+            <h3>COD คงเหลือ</h3>
+            <div class="stat"><div class="big" id="statCOD">฿8,500</div><span class="pill">พร้อมถอน</span></div>
+          </div>
         </div>
         <div class="grid" style="margin-top:12px">
           <div class="card">
-            <h3>การแจ้งเตือน SLA</h3>
-            <table><thead><tr><th>ประเภท</th><th>รายละเอียด</th><th>เวลา</th></tr></thead>
-              <tbody id="slaTable"></tbody>
-            </table>
+            <h3>ลิงก์ด่วน</h3>
+            <div class="actions">
+              <button class="btn primary" onclick="goto('create')">+ สร้างออเดอร์</button>
+              <button class="btn ghost" onclick="goto('tracking')">ติดตามพัสดุ</button>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Users / Roles -->
-      <section id="tab-users" class="content">
+      <!-- Create Order -->
+      <section id="tab-create" class="content">
+        <div class="card" style="margin-bottom:12px"><h3>สร้างออเดอร์</h3><p class="hint">กรอกข้อมูลผู้รับและรายละเอียดพัสดุให้ครบถ้วน</p></div>
+        <form id="orderForm" novalidate>
+          <div>
+            <label>ชื่อผู้รับ *</label>
+            <input type="text" name="receiver" required placeholder="เช่น สุชาติ ใจดี" />
+            <div class="error" data-err="receiver"></div>
+          </div>
+          <div>
+            <label>เบอร์โทรผู้รับ *</label>
+            <input type="tel" name="phone" required pattern="^0\\d{8,9}$" placeholder="0XXXXXXXXX" />
+            <div class="hint">รูปแบบ: เริ่มด้วย 0 มี 9–10 หลัก</div>
+            <div class="error" data-err="phone"></div>
+          </div>
+          <div>
+            <label>ที่อยู่ *</label>
+            <textarea name="address" required placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
+            <div class="error" data-err="address"></div>
+          </div>
+          <div class="row">
+            <div>
+              <label>พิกัด GPS (ไม่บังคับ)</label>
+              <input type="text" name="gps" placeholder="13.7563, 100.5018" />
+            </div>
+            <div>
+              <label>นัดรับ</label>
+              <select name="schedule">
+                <option value="now">ด่วน (รับทันที)</option>
+                <option value="today">วันนี้</option>
+                <option value="tomorrow">พรุ่งนี้</option>
+                <option value="custom">กำหนดวัน/เวลา</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" id="scheduleRow" style="display:none">
+            <div>
+              <label>วันที่</label>
+              <input type="date" name="date" />
+            </div>
+            <div>
+              <label>เวลา</label>
+              <input type="time" name="time" />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label>น้ำหนัก (กก.)</label>
+              <input type="number" step="0.01" min="0" name="weight" placeholder="เช่น 1.2" />
+            </div>
+            <div>
+              <label>ขนาดกล่อง</label>
+              <select name="size">
+                <option value="s">S</option>
+                <option value="m">M</option>
+                <option value="l">L</option>
+                <option value="xl">XL</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>รายละเอียดพัสดุ</label>
+            <textarea name="desc" placeholder="เสื้อผ้า 2 ชิ้น / ไม่แตกหัก"></textarea>
+          </div>
+          <div class="row">
+            <div>
+              <label>รูปแบบชำระเงิน</label>
+              <select name="payment">
+                <option value="prepaid">จ่ายต้นทาง</option>
+                <option value="cod">ปลายทาง (COD)</option>
+              </select>
+            </div>
+            <div>
+              <label>ยอด COD (ถ้ามี)</label>
+              <input type="number" min="0" step="1" name="cod" placeholder="เช่น 850" />
+            </div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn ghost" onclick="resetForm()">ล้างฟอร์ม</button>
+            <button type="submit" class="btn primary">บันทึกออเดอร์</button>
+          </div>
+          <div class="hint">เมื่อบันทึกสำเร็จ ระบบจะสร้าง Tracking ให้โดยอัตโนมัติ</div>
+        </form>
+      </section>
+
+      <!-- Tracking -->
+      <section id="tab-tracking" class="content">
         <div class="card" style="margin-bottom:12px">
-          <h3>ผู้ใช้งานและบทบาท</h3>
-          <div class="row"><input id="userSearch" placeholder="ค้นหาชื่อ/อีเมล" oninput="filterUsers()" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn primary" onclick="createUser()">+ สร้างผู้ใช้</button></div>
+          <h3>ติดตามพัสดุ</h3>
+          <input id="trkSearch" type="text" placeholder="พิมพ์เลข Tracking หรือชื่อผู้รับ" oninput="filterTracking()" />
         </div>
-        <table>
-          <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>บทบาท</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
-          <tbody id="userTable"></tbody>
+        <table id="trkTable">
+          <thead><tr><th>เลข</th><th>ผู้รับ</th><th>สถานะ</th><th>อัปเดตล่าสุด</th></tr></thead>
+          <tbody></tbody>
         </table>
       </section>
 
-      <!-- COD Reconcile -->
+      <!-- COD -->
       <section id="tab-cod" class="content">
         <div class="grid">
-          <div class="card"><h3>คำขอถอนเงิน COD</h3><div id="codReq" class="grid" style="gap:10px"></div></div>
-          <div class="card"><h3>ประวัติอนุมัติ</h3><table><thead><tr><th>เวลา</th><th>ผู้ค้า</th><th>ยอด</th></tr></thead><tbody id="codHist"></tbody></table></div>
+          <div class="card">
+            <h3>ยอด COD</h3>
+            <div class="stat">
+              <div class="big" id="codBalance">฿8,500</div>
+              <span class="pill">ยอดพร้อมถอน</span>
+            </div>
+            <div class="actions" style="margin-top:10px">
+              <button class="btn primary" onclick="requestWithdraw()">ถอนเงิน</button>
+              <button class="btn ghost" onclick="toast('ดาวน์โหลดรายงาน (ตัวอย่าง)')">รายงาน</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>ประวัติการถอน</h3>
+            <div id="wdHistory" class="hint">ยังไม่มีรายการ</div>
+          </div>
         </div>
       </section>
 
-      <!-- Config -->
-      <section id="tab-config" class="content">
-        <div class="grid">
-          <div class="card"><h3>โซน/เรทราคา</h3><div class="row"><input id="zone" placeholder="ชื่อโซน เช่น BKK-W" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><input id="rate" type="number" placeholder="ค่าเริ่มต้น (฿)" style="width:140px;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn primary" onclick="addRate()">บันทึก</button></div><div id="rateList" class="grid" style="gap:8px;margin-top:8px"></div></div>
-          <div class="card"><h3>Webhooks / API</h3><div class="row"><input placeholder="URL" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"/><button class="btn ghost" onclick="toast('ทดสอบส่ง Webhook (ตัวอย่าง)')">ทดสอบ</button></div></div>
-        </div>
+      <!-- History -->
+      <section id="tab-history" class="content">
+        <div class="card" style="margin-bottom:12px"><h3>ประวัติออเดอร์</h3></div>
+        <table id="histTable">
+          <thead><tr><th>วันที่</th><th>เลข</th><th>ปลายทาง</th><th>สถานะ</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </section>
 
-      <!-- Reports -->
-      <section id="tab-reports" class="content">
-        <div class="card"><h3>รายงาน</h3><div class="row"><select id="reportType" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px"><option value="daily">รายวัน</option><option value="cod">COD</option><option value="exception">ข้อยกเว้น</option><option value="rider-kpi">Rider KPI</option></select><button class="btn primary" onclick="exportReport()">Export CSV</button></div></div>
-        <table><thead><tr><th>เวลา</th><th>ไฟล์</th><th>สถานะ</th></tr></thead><tbody id="reportLog"></tbody></table>
-      </section>
+      <button class="fab" onclick="goto('create')">➕ สร้าง</button>
 
-      <nav class="bnv" role="tablist">
-        <div class="tab active" data-tab="kpi" onclick="switchTab(this)">📊<span>Dashboard</span></div>
-        <div class="tab" data-tab="users" onclick="switchTab(this)">👥<span>Users</span></div>
+      <nav class="bnv" role="tablist" aria-label="เมนูหลัก">
+        <div class="tab active" data-tab="dashboard" onclick="switchTab(this)">🏠<span>หน้าแรก</span></div>
+        <div class="tab" data-tab="create" onclick="switchTab(this)">📝<span>สร้าง</span></div>
+        <div class="tab" data-tab="tracking" onclick="switchTab(this)">🔎<span>ติดตาม</span></div>
         <div class="tab" data-tab="cod" onclick="switchTab(this)">💼<span>COD</span></div>
-        <div class="tab" data-tab="config" onclick="switchTab(this)">⚙️<span>Config</span></div>
-        <div class="tab" data-tab="reports" onclick="switchTab(this)">📄<span>Reports</span></div>
+        <div class="tab" data-tab="history" onclick="switchTab(this)">🕘<span>ประวัติ</span></div>
       </nav>
+
+      <!-- Fullscreen Modal: Scanner/Camera (placeholder) -->
+      <div id="scanModal" class="modal" aria-hidden="true">
+        <div class="sheet">
+          <header>
+            <div class="brand" style="padding:0 14px;gap:8px">
+              <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+              <h2>สแกนบาร์โค้ด / ถ่ายรูป</h2>
+            </div>
+          </header>
+          <div class="body">
+            <div class="card" style="text-align:center">
+              <p class="hint">สาธิต: กล้องจริงยังไม่เปิดใช้งานในตัวอย่างนี้</p>
+              <div style="aspect-ratio:16/9;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;margin-top:12px">🔲 กล้อง</div>
+              <div class="actions" style="justify-content:center;margin-top:12px">
+                <button class="btn ghost" onclick="closeScan()">ปิด</button>
+                <button class="btn primary" onclick="toast('สแกนสำเร็จ (ตัวอย่าง)')">บันทึก</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script>
-    function switchTab(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');const tab=el.dataset.tab;document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active')}
-    function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+    // Simple SPA tab switch
+    function switchTab(el){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
+      el.classList.add('active')
+      const tab = el.dataset.tab
+      document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'))
+      document.getElementById('tab-'+tab).classList.add('active')
+      // Scroll to top of content on switch
+      document.getElementById('tab-'+tab).scrollTop = 0
+    }
+    function goto(tab){
+      const el = document.querySelector(`.tab[data-tab="${tab}"]`)
+      if(el) switchTab(el)
+    }
 
-    // SLA table demo
-    const slaRows=[{type:'OFD Delay',detail:'8 ชิ้นเกิน SLA เขตบางแค',time:'11:05'},{type:'Hub Backlog',detail:'15 ชิ้นรอคัดแยก > 60 นาที',time:'10:50'},{type:'CS Queue',detail:'รอคิว 14 เคส',time:'10:45'}]
-    document.getElementById('slaTable').innerHTML = slaRows.map(r=>`<tr><td>${r.type}</td><td>${r.detail}</td><td>${r.time}</td></tr>`).join('')
+    // Toast (very simple)
+    function toast(msg){
+      const t = document.createElement('div')
+      t.textContent = msg
+      t.style.cssText = 'position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99'
+      document.body.appendChild(t)
+      setTimeout(()=>t.remove(), 1800)
+    }
 
-    // Users demo
-    const users=[{name:'คุณธันย์ใจ',email:'rider1@thunjai.express',role:'Rider',status:'Active'},{name:'บางแค Hub',email:'hub01@thunjai.express',role:'Hub',status:'Active'},{name:'Kornthip',email:'admin@thunjai.express',role:'Admin',status:'Active'}]
-    function renderUsers(){ document.getElementById('userTable').innerHTML=users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.role}</td><td>${u.status}</td><td><button class='btn ghost' onclick="editUser('${u.email}')">แก้ไข</button></td></tr>`).join('') }
-    function filterUsers(){ const q=document.getElementById('userSearch').value.toLowerCase();Array.from(document.querySelectorAll('#userTable tr')).forEach(tr=>{tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none'}) }
-    function createUser(){ users.push({name:'New User',email:'new@thunjai.express',role:'Sender',status:'Invite'}); renderUsers(); toast('สร้างผู้ใช้ (เดโม)') }
-    function editUser(email){ toast('แก้ไขผู้ใช้: '+email) }
-    renderUsers()
+    // Create Order form logic
+    const form = document.getElementById('orderForm')
+    const scheduleSel = form.elements['schedule']
+    scheduleSel.addEventListener('change', e=>{
+      document.getElementById('scheduleRow').style.display = (e.target.value==='custom')?'grid':'none'
+    })
 
-    // COD demo
-    const codReq=[{time:'10:00',merchant:'ร้าน A',amt:8500},{time:'10:15',merchant:'ร้าน B',amt:12300}]
-    function renderCOD(){ document.getElementById('codReq').innerHTML = codReq.map(x=>`<div class='card'><div class='row'><b>${x.merchant}</b><b>฿${x.amt.toLocaleString('th-TH')}</b></div><div class='row'><span class='muted'>${x.time}</span><div><button class='btn ghost' onclick='approveCOD(${x.amt})'>อนุมัติ</button> <button class='btn warn' onclick='rejectCOD()'>ปฏิเสธ</button></div></div></div>`).join('') }
-    function approveCOD(amt){ addCODHist({time:new Date().toLocaleString('th-TH'),merchant:'(ตัวอย่าง)',amt}); toast('อนุมัติถอนเงิน') }
-    function rejectCOD(){ toast('ปฏิเสธคำขอ') }
-    function addCODHist(r){ const tr=document.createElement('tr'); tr.innerHTML=`<td>${r.time}</td><td>${r.merchant}</td><td>฿${r.amt.toLocaleString('th-TH')}</td>`; document.getElementById('codHist').prepend(tr) }
-    renderCOD()
+    function setError(name, msg){
+      const el = document.querySelector(`[data-err="${name}"]`)
+      if(el) el.textContent = msg||''
+    }
+    function resetForm(){ form.reset(); document.getElementById('scheduleRow').style.display='none'; ['receiver','phone','address'].forEach(n=>setError(n,'')) }
 
-    // Config demo
-    function addRate(){ const z=document.getElementById('zone').value.trim(); const r=Number(document.getElementById('rate').value||0); if(!z||!r){toast('กรอกโซน/เรทให้ครบ');return} const row=document.createElement('div'); row.className='row'; row.innerHTML=`<span>${z}</span><b>฿${r.toLocaleString('th-TH')}</b>`; document.getElementById('rateList').appendChild(row); toast('บันทึกเรทเรียบร้อย') }
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault()
+      let ok = true
+      const recv = form.elements['receiver']
+      const phone = form.elements['phone']
+      const addr = form.elements['address']
+      if(!recv.value.trim()){ setError('receiver','กรุณากรอกชื่อผู้รับ'); ok=false } else setError('receiver','')
+      const phoneRe = /^0\d{8,9}$/
+      if(!phoneRe.test(phone.value.trim())){ setError('phone','เบอร์โทรไม่ถูกต้อง'); ok=false } else setError('phone','')
+      if(!addr.value.trim()){ setError('address','กรุณากรอกที่อยู่'); ok=false } else setError('address','')
+      if(!ok) return
+      // Simulate order creation
+      const trk = 'TJX' + Math.random().toString(36).slice(2,7).toUpperCase()
+      addTracking({no:trk, name:recv.value.trim(), status:'COMMISSION CREATE', ts:new Date()})
+      addHistory({date:new Date(), no:trk, dest:addr.value.split('\n')[0]||addr.value.slice(0,24), status:'CREATED'})
+      toast('บันทึกออเดอร์สำเร็จ | เลข '+trk)
+      resetForm()
+      goto('tracking')
+    })
 
-    // Reports demo
-    function exportReport(){ const t=document.getElementById('reportType').value; const time=new Date().toLocaleString('th-TH'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${time}</td><td>${t}.csv</td><td>สำเร็จ</td>`; document.getElementById('reportLog').prepend(tr); toast('กำลังสร้างรายงาน (เดโม)') }
+    // Tracking data demo
+    const trkBody = document.querySelector('#trkTable tbody')
+    const histBody = document.querySelector('#histTable tbody')
+    const dataTrk = []
+    function addTracking(row){
+      dataTrk.unshift(row)
+      renderTracking()
+    }
+    function renderTracking(){
+      trkBody.innerHTML = dataTrk.map(r=>{
+        const dt = new Date(r.ts)
+        const ts = dt.toLocaleString('th-TH', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'})
+        return `<tr><td>${r.no}</td><td>${r.name}</td><td>${r.status}</td><td>${ts}</td></tr>`
+      }).join('') || `<tr><td colspan="4" class="hint" style="padding:14px;background:none;border:none">ยังไม่มีรายการ</td></tr>`
+    }
+    function filterTracking(){
+      const q = document.getElementById('trkSearch').value.toLowerCase()
+      const rows = Array.from(trkBody.querySelectorAll('tr'))
+      rows.forEach(tr=>{
+        const text = tr.textContent.toLowerCase()
+        tr.style.display = text.includes(q)?'':'none'
+      })
+    }
+
+    // History demo
+    function addHistory(row){
+      const d = new Date(row.date)
+      const dstr = d.toLocaleDateString('th-TH', {year:'numeric', month:'2-digit', day:'2-digit'})
+      const tr = document.createElement('tr')
+      tr.innerHTML = `<td>${dstr}</td><td>${row.no}</td><td>${row.dest}</td><td>${row.status}</td>`
+      histBody.prepend(tr)
+    }
+
+    // COD withdraw demo
+    function requestWithdraw(){
+      const now = new Date().toLocaleString('th-TH')
+      document.getElementById('wdHistory').innerHTML = `<ul><li>${now}: คำขอถอนเงิน ฿8,500 (สถานะ: รอดำเนินการ)</li></ul>`
+      toast('ส่งคำขอถอนเงินแล้ว')
+    }
+
+    // Scan modal
+    function openScan(){ document.getElementById('scanModal').classList.add('open'); document.getElementById('scanModal').setAttribute('aria-hidden','false') }
+    function closeScan(){ document.getElementById('scanModal').classList.remove('open'); document.getElementById('scanModal').setAttribute('aria-hidden','true') }
+
+    // Seed sample rows
+    ;(function seed(){
+      ['TJX8AB12','TJX7CD34','TJX5EF56'].forEach((no,i)=>{
+        addTracking({no, name:['คุณนที','คุณพร','คุณดาว'][i], status:['HUB IN','OUT FOR DELIVERY','DELIVERED'][i], ts:new Date(Date.now()- (i+1)*3600e3)})
+        addHistory({date:new Date(Date.now()-(i+2)*86400e3), no, dest:['บางแค','พระโขนง','รัตนาธิเบศร์'][i], status:['HUB IN','OFD','DELIVERED'][i]})
+      })
+    })()
   </script>
 </body>
 </html>
